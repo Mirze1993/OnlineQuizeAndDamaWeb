@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Font Awesome Icons -->
+    <link href="~/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <!-- IonIcons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    @RenderSection("CSS", required: false)
+</head>
+
+<body class="hold-transition login-page">
+    
+            @RenderBody()
+
+    <!-- jQuery -->
+    <script src="~/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE -->
+    <script src="~/dist/js/adminlte.min.js"></script>
+    @RenderSection("Script", required: false)
+</body>
+</html>

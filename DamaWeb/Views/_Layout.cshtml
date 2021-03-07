@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Font Awesome Icons -->
+    <link href="~/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <!-- IonIcons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    @RenderSection("CSS", required: false)
+</head>
+
+<body class="hold-transition sidebar-mini  sidebar-collapse">
+    <div class="wrapper">
+
+        @await Html.PartialAsync("_Head.cshtml")
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+        @await Html.PartialAsync("_Footer.cshtml")
+
+    </div>
+
+
+    <!-- jQuery -->
+    <script src="~/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE -->
+    <script src="~/dist/js/adminlte.min.js"></script>
+    <!-- onlineUser -->
+    <script src="~/customerJS/Online.js"></script>
+
+    @RenderSection("Script", required: false)
+</body>
+</html>

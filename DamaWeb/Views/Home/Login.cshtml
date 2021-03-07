@@ -1,0 +1,69 @@
+﻿@model UILogin
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/_LoginLayout.cshtml";
+}
+
+@section CSS{ 
+    <link href="~/bootstrap/css/icheck-bootstrap.min.css" rel="stylesheet" />
+}
+<div class="login-box">
+    <!-- /.login-logo -->
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <b>Daxil olmaq</b>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">Email və parolu yazaraq daxil olun</p>
+
+            <form asp-action="Login" asp-controller="Home" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="input-group mb-3">
+                    <input asp-for="UserName" placeholder="Email" class="form-control">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="UserName" class="text-danger "></span>
+
+                <div class="input-group mb-3">
+                    <input asp-for="Password" class="form-control" placeholder="Password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Password" class="text-danger   "></span>
+
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <input asp-for="RememberMe" type="checkbox" id="remember">
+                            <label for="remember">
+                                Girişi yadda saxla
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Daxil olun</button>
+                    </div>
+                    <div class="col-4">
+                        <a asp-action="SignUp" asp-controller="Home" class="btn btn-primary btn-block">Qeydiyyat</a>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</div>
+
+@section Script{
+    <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
