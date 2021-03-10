@@ -81,7 +81,7 @@ namespace DamaWeb.Controllers
                         IsPersistent = login.RememberMe,
                     };
 
-                   
+
                     var claims = new List<Claim>()
                     {
                         new Claim(ClaimTypes.NameIdentifier,u.Id.ToString()),

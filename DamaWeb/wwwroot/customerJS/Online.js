@@ -1,19 +1,20 @@
-﻿var timer; var timer2;
+﻿var timer;
 function ShowOnline() {
-    console.log($("#online").is(":checked"));
+    localStorage.setItem("online", $("#online").prop('checked') )
     if ($("#online").prop('checked') == true) { 
-        clearInterval(timer2);
+        console.log("rtdhdtrhd");
         clearInterval(timer);
-        timer = setInterval(SetOnline, 2000);
-        timer2=setInterval(GetOnlineUsers, 2000);
+        timer = setInterval(SetOnline, 10000);
     }
     if ($("#online").prop('checked') == false) {
         clearInterval(timer);
     }
 }
 
+
+
 function SetOnline() {
-    console.log("SetOnline");
+    console.log("asdas");
     $.ajax({
         method: "post",
         url: "/Home/Online",
@@ -28,10 +29,7 @@ function GetOnlineUsers() {
         method: "post",
         url: "/Home/GetOnlineUsers",
         success: function (msg) {
-            $(msg).each(function (i,e) {
-                console.log(e.name);
-            });
-            
+           
         }
     });
 }

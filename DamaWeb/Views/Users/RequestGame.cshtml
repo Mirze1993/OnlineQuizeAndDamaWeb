@@ -1,0 +1,22 @@
+﻿@model AppUser
+@{
+}
+
+<div class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            Istek gondermeye eminsenmi
+            <button type="button" class="close" data-dismiss="modal"> 
+                <span>x</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            Name:@Model.Name <br />
+            Email:@Model.Email <br />
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success" data-send="modal" data-value="@Model.Id">Send</button>
+        </div>
+    </div>
+</div>

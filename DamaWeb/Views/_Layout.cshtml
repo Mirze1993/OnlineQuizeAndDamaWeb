@@ -39,5 +39,16 @@
     <script src="~/customerJS/Online.js"></script>
 
     @RenderSection("Script", required: false)
+
+    <script>
+        $(document).ready(function () {
+            var checkboxValue = JSON.parse(localStorage.getItem('online'));
+            console.log(checkboxValue);
+            if (checkboxValue != null) {
+                $("#online").prop('checked', checkboxValue)
+            }
+            ShowOnline();
+        });
+    </script>
 </body>
 </html>

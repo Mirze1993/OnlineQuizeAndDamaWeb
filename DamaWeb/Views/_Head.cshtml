@@ -15,10 +15,11 @@
     <ul class="navbar-nav ml-auto">
         @if (User.Identity.IsAuthenticated)
         {
-            <li class="custom-switch nav-link">
-                <input type="checkbox" class="custom-control-input"  id="online" onchange="ShowOnline()">
-                <label class=" custom-control-label" for="online">Online</label>
-            </li>
+
+        <li class="custom-switch nav-link">
+             <input type="checkbox" class="custom-control-input"  id="online" onchange="ShowOnline()">
+            <label class=" custom-control-label" for="online">Online</label>
+        </li>
 
             <li class="nav-item">
                 <a class="nav-link" asp-action="---" asp-controller="-">
@@ -74,7 +75,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
-    with font-awesome or any other icon font library -->
+                with font-awesome or any other icon font library -->
 
                 <li class="nav-item">
                     <a asp-action="MainRoom" asp-controller="GameRome" class="nav-link">
@@ -85,7 +86,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-action="MainRoom" asp-controller="GameRome" class="nav-link">
+                    <a asp-action="UsersIndex" asp-controller="Users" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
                             Users
