@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace DamaWeb.Controllers
 {
-    public class GameRomeController : Controller
+    public class GameRoomController : Controller
     {
         public IActionResult MainRoom()
         {
             return View();
+        }
+
+        public void RequestGame(int id)
+        {
+            var idd = id;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace DamaWeb.Controllers
 
         public IActionResult RequestGame(int id)
         {
-            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id");
+            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id").Item1;
             return PartialView("RequestGame",u);
         }
 
