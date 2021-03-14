@@ -1,27 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Logf\**" />
+    <Content Remove="wwwroot\Logf\**" />
+    <EmbeddedResource Remove="wwwroot\Logf\**" />
+    <None Remove="wwwroot\Logf\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CommonTool">
-      <HintPath>..\MicroORM\CommonTool.dll</HintPath>
-    </Reference>
-    <Reference Include="MicroORM">
-      <HintPath>..\MicroORM\MicroORM.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="5.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.11" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <PackageReference Include="OrmMan.OrmMan.MicroORM" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

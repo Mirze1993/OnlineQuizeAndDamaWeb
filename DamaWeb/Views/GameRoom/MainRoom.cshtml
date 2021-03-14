@@ -2,8 +2,203 @@
 @{
     ViewData["Title"] = "MainRoom";
     Layout = "~/Views/_Layout.cshtml";
+    var id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+}
+@section CSS{
+    <link href="~/dataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/dataTables/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/bootstrap/css/bootstrap-4.min.css" rel="stylesheet" />
+    <link href="~/bootstrap/css/toastr.min.css" rel="stylesheet" />
 }
 
 <div class="container-fluid">
 
+    <div class="card card-primary">
+        <div class="card-header">
+            Aktiv oyunlar
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="ActiveGame" class="table table-striped ">
+                <thead>
+                    <tr>
+                        <th>RequestUser</th>
+                        <th>AcceptUser</th>
+                        <th>Status</th>
+                        <th>Start</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--with jquery download-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card card-red">
+        <div class="card-header">
+            WaitRequest
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="WaitRequest" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>RequestUser</th>
+                        <th>AcceptUser</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--with jquery download-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card card-green">
+        <div class="card-header">
+            WaitAccept
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="WaitAccept" class="table table-striped table-valign-middle">
+                <thead>
+                    <tr>
+                        <th>RequestUser</th>
+                        <th>AcceptUser</th>
+                        <th>Status</th>
+                        <th>Tesdiqle</th>
+                        <th>Levg et</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--with jquery download-->
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+
+
+@section Script{
+    <script src="~/dataTables/jquery/jquery.dataTables.min.js"></script>
+    <script src="~/dataTables/jquery/dataTables.bootstrap4.min.js"></script>
+    <script src="~/dataTables/jquery/dataTables.responsive.min.js"></script>
+    <script src="~/dataTables/jquery/responsive.bootstrap4.min.js"></script>
+    <script src="~/bootstrap/alertjs/toastr.min.js"></script>
+    <script src="~/customerJS/modal.js"></script>
+    <script>
+        var WaitRequest, WaitAccept, ActiveGame;
+        $(function () {
+            //Initialize Select2 Elements
+            WaitAccept=$("#WaitAccept").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+            });
+            WaitRequest=$("#WaitRequest").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+
+            });
+            ActiveGame=$("#ActiveGame").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+            });
+        });
+
+        $(document).ready(function () {
+            CheckGamesDB();
+            var timer = setInterval(CheckGamesDB, 100000);
+        });
+        function CheckGamesDB() {
+            $.ajax({
+                    method: "post",
+                    url: "@Url.Action("CheckGame", "GameRoom")",
+                    success: function (msg) {
+                        loadTable(msg);
+                    },
+                    error: function (msg) {
+                        alert(msg);
+                    }
+                });
+        }
+
+        function loadTable(obj) {
+            console.log(obj)
+            WaitRequest.clear().draw();
+            WaitAccept.clear().draw();
+            ActiveGame.clear().draw();
+            if ($.isEmptyObject(obj))return
+            $(obj).each(function (i, value) {
+                //send
+                if (value.requestUser ==@id&& value.status == 'Wait') {                    
+                    WaitRequest.row.add([
+                        value.requestUserName,
+                        value.acceptUserName,
+                        value.status
+
+                    ]).draw(false);
+                }
+                //accept
+                if (value.acceptUser ==@id&& value.status == 'Wait') {
+                    var b = '<button class="btn btn-success"  type="button" onclick="AcceptRequest('+value.id+')"><i class="fas fa-check-circle"></i></button >';
+                    var b1 = '<button class="btn btn-danger" type="button" onclick="RejectRequest('+value.id+')"><i class="fa fa-times" aria-hidden="true"></i></button>';                    
+                    WaitAccept.row.add([
+                        value.requestUserName,
+                        value.acceptUserName,
+                        value.status,
+                        b,
+                        b1
+                    ]).draw(false);
+
+                }
+                //active
+                if (value.status == 'Start') { 
+                    var start = '<a href="/GameRoom/Start/'+value.id+'" class="btn btn-success"> <i class="fas fa-play"></i></a>';
+                    ActiveGame.row.add([
+                        value.requestUserName,
+                        value.acceptUserName,
+                        value.status,
+                        start
+                    ]).draw(false);
+                }
+            });
+        }
+
+        function AcceptRequest(id) {
+            $.post("/GameRoom/AcceptRequest", { id: id }).done(function (event) {
+                if (event) {
+                    toastr.success("Oyun isteyi qebul olundu", "success");
+                }
+                else toastr.error("xeta bas verdi");
+            });
+        }
+        function RejectRequest(id) {
+            $.post("/GameRoom/RejectRequest", { id: id }).done(function (event) {
+                if (event) {
+                    toastr.info("Oyun levg olundu", "success");
+                    CheckGamesDB();
+                }
+                else toastr.error("xeta bas verdi");
+            });
+        }
+
+
+
+    </script>
+}

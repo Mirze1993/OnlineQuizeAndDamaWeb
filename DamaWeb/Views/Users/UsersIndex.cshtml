@@ -4,6 +4,7 @@
     ViewData["Title"] = "UsersIndex";
     Layout = "~/Views/_Layout.cshtml";
     var onlineUsers = DamaWeb.Tools.OnlineUsers.Users;
+    var userid= Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
 }
 @section CSS{
     <link href="~/dataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
@@ -12,7 +13,6 @@
     <link href="~/bootstrap/css/toastr.min.css" rel="stylesheet" />
 }
 
-<div class="content-wrapper">
     <div id="placeholder"></div>
     <div class="container-fluid">
         <div class="row">
@@ -36,21 +36,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                @foreach (var item in onlineUsers)
+                                @if (onlineUsers != null)
                                 {
-                                    <tr>
-                                        <td>
-                                            @item.Name
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="ajax-game-request" data-url="/Users/RequestGame/@item.Id">
-                                                Request
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    @foreach (var item in onlineUsers)
+                                    {
+                                        if (item.Id == userid) continue;
+                                        <tr>
+                                            <td>
+                                                @item.Name
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-toggle="ajax-game-request" data-url="/Users/RequestGame/@item.Id">
+                                                    Request
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-
                             </tbody>
                         </table>
                     </div>
@@ -81,11 +83,15 @@
                                 {
                                     @foreach (var item in Model)
                                     {
+                                        if (item.Id == userid) continue;
                                         <tr>
                                             <td>
-                                                @if (onlineUsers.Any(x => x.Id == item.Id))
+                                                @if (onlineUsers != null)
                                                 {
-                                                    <span class="badge badge-success">+</span>
+                                                    @if (onlineUsers.Any(x => x.Id == item.Id))
+                                                    {
+                                                        <span class="badge badge-success">+</span>
+                                                    }
                                                 }
                                             </td>
                                             <td>
@@ -106,9 +112,9 @@
             </div>
         </div>
     </div>
-</div>
 
-@section Script{ 
+
+@section Script{
     <script src="~/dataTables/jquery/jquery.dataTables.min.js"></script>
     <script src="~/dataTables/jquery/dataTables.bootstrap4.min.js"></script>
     <script src="~/dataTables/jquery/dataTables.responsive.min.js"></script>

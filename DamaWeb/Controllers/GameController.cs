@@ -3,6 +3,7 @@ using DamaWeb.Repostory;
 using Microsoft.AspNetCore.Mvc;
 using Model.Models;
 using Model.UIGame;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,21 +18,17 @@ namespace DamaWeb.Controllers
         {
             repository = new PlayGameRepository();
         }
-        public IActionResult Start(int id)
+       
+
+        [HttpPost]
+        public string StartGame(int id)
         {
-            ViewBag.GameId = id;
-            return View();
+            var pg = repository.GetByColumNameFist("GameId", id).Item1;
+            return JsonConvert.SerializeObject(pg);
         }
 
         [HttpPost]
-        public JsonResult StartGame(int id)
-        {
-            var (pg,b) = repository.GetByColumNameFist("GameId", id);
-            return new  JsonResult(pg);
-        }
-
-        [HttpPost]
-        public JsonResult PossiblePlace(int x, int y, int z, int gameId)
+        public string PossiblePlace(int x, int y, int z, int gameId)
         {
             var pg = repository.GetByColumNameFist("GameId", gameId).Item1;
             UICoordinate uICoordinate = new UICoordinate();
@@ -56,11 +53,11 @@ namespace DamaWeb.Controllers
                     Convert.ToByte(z)).
                     BLack();
             }
-            return new JsonResult(uICoordinate);
+            return JsonConvert.SerializeObject(uICoordinate);
         }
 
         [HttpPost]
-        public JsonResult Move(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
+        public string Move(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
         {
             var pg = repository.GetByColumNameFist("GameId", gameID).Item1;
             var uiGame = new SrzJson().desrz(pg);
@@ -84,15 +81,15 @@ namespace DamaWeb.Controllers
                 uiGame = moveItem.MoveBlack();
                 uiGame.Queue = uiGame.Gamer1;
             }
-            if (!repository.Update(new SrzJson().srz(uiGame), pg.Id)) 
-                return new JsonResult(default(Move));
+            var mm=new SrzJson().srz(uiGame);
+            if (new PlayGameRepository().Update(mm, pg.Id)) return "";
 
-            return new JsonResult(uiGame.Move);
+            return JsonConvert.SerializeObject(uiGame.Move);
         }
 
 
         [HttpPost]
-        public JsonResult DumMove(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
+        public string DumMove(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
         {
             var pg = repository.GetByColumNameFist("GameId", gameID).Item1;
             var uiGame = new SrzJson().desrz(pg);
@@ -109,14 +106,13 @@ namespace DamaWeb.Controllers
             if (uiGame.Gamer1 == uiGame.Queue) uiGame = moveItem.DumWhite();
             else if (uiGame.Gamer2 == uiGame.Queue) uiGame = moveItem.DumBlack();
 
-            if (!repository.Update(new SrzJson().srz(uiGame), pg.Id))
-                return new JsonResult(default(Move));
+            if (!repository.Update(new SrzJson().srz(uiGame), pg.Id)) return "";
 
-            return new JsonResult(uiGame.Move);
+            return JsonConvert.SerializeObject(uiGame.Move);
         }
 
         [HttpPost]
-        public JsonResult CkeckGame(int gameId)
+        public string CkeckGame(int gameId)
         {
             var pg = repository.GetByColumNameFist("GameId", gameId).Item1;
             //any stone win
@@ -128,9 +124,9 @@ namespace DamaWeb.Controllers
                 if (!pg.WhiteCoordinate.Contains("X")) g.WinUser = g.AcceptUser;
                 if (!pg.BlackCoordinate.Contains("X")) g.WinUser = g.RequestUser;
                 var b = gamesRepostory.Update(g, g.Id);
-                return new JsonResult("Win User:" + g.WinUser);
+                return "Win User " + g.WinUser;
             }
-            return new JsonResult(pg);
+            return JsonConvert.SerializeObject(pg);
         }
 
     }
