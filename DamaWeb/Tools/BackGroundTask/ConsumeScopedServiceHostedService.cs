@@ -20,7 +20,7 @@ namespace DamaWeb.Tools.BackGroundTask
         }
         private void DoWork(object state)
         {
-            OnlineUsers.RemoveUsers(); 
+           // ConnectionMapping.RemoveUsers(); 
         }
         //private async Task DoWork(CancellationToken stoppingToken)
         //{

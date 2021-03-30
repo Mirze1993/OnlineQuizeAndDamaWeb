@@ -20,7 +20,6 @@ $(function () {
         //var senddata = form.serialize();
         
         var id = $(this).data('value');
-        console.log(id);
         var urll = "/GameRoom/RequestGame/" + id
         $.ajax({
             method: "post",

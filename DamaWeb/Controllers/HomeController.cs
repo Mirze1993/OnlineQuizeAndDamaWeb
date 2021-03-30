@@ -112,19 +112,19 @@ namespace DamaWeb.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize]
-        [HttpPost]
-        public void Online()
-        {
-            var obj=User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            if (string.IsNullOrEmpty(obj)) return;
-            OnlineUsers.AddUser(User.Identity.Name,Convert.ToInt32(obj));
-        }
-        [Authorize]
-        [HttpPost]
-        public JsonResult GetOnlineUsers()
-        {
-            return new JsonResult(OnlineUsers.Users);
-        }
+        //[Authorize]
+        //[HttpPost]
+        //public void Online()
+        //{
+        //    var obj=User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        //    if (string.IsNullOrEmpty(obj)) return;
+        //    ConnectionMapping.AddUser(User.Identity.Name,Convert.ToInt32(obj));
+        //}
+        //[Authorize]
+        //[HttpPost]
+        //public JsonResult GetOnlineUsers()
+        //{
+        //    return new JsonResult(ConnectionMapping.Users);
+        //}
     }
 }

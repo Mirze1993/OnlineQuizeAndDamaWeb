@@ -1,3 +1,4 @@
+using DamaWeb.Hubs;
 using DamaWeb.Tools;
 using DamaWeb.Tools.BackGroundTask;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -44,7 +45,9 @@ namespace DamaWeb
                 options.LoginPath = "/Home/Login";
                 options.LogoutPath = "/Home/Login";                
             });
+            services.AddSignalR();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            
             //services.AddHostedService<TimeHostedService>();
             services.AddHostedService<ConsumeScopedServiceHostedService>();
             //services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
@@ -67,6 +70,8 @@ namespace DamaWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapHub<GameHub>("/gamehub");
+                endpoints.MapHub<MainHub>("/mainhub");
             });
         }
     }

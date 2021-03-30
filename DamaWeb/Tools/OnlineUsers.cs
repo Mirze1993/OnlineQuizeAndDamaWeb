@@ -8,29 +8,29 @@ namespace DamaWeb.Tools
 {
     public class OnlineUsers
     {
-        public static int Count { get; set; } = 0;
+        public static int Count { get =>Users!=null? Users.Count:0; }
         
-        public static List<OnlieUsersEntity> Users { get; set; }
+        public static HashSet<OnlieUsersEntity> Users { get; set; }
 
         private static readonly object obj = new object();
 
-        public static void RemoveUsers()
+        public static void RemoveUsers(string connectionID)
         {
             lock (obj)
             {
                 if (Users == null) return;
-                var ss = Users.RemoveAll(x => (DateTime.Now - x.Date).TotalMinutes > 1);
-                Count = Users.Count;
+                var d = Users.FirstOrDefault(x => x.ConnectionId == connectionID);
+                if(d!=null)Users.Remove(d);
             }
         }
 
-        public static void AddUser(string userName,int id)
+        public static void AddUser(string userName,int id,string connectionId)
         { 
             lock (obj)
             {
-                if (Users == null) Users =new List<OnlieUsersEntity>();
-                if (Users.Any(x=>x.Name==userName)) Users.FirstOrDefault(x=> x.Name == userName).Date = DateTime.Now;
-                else Users.Add(new OnlieUsersEntity { Date=DateTime.Now,Id=id,Name=userName});
+                if (Users == null) Users =new HashSet<OnlieUsersEntity>();
+                if (Users.Any(x => x.Name == userName)) Users.RemoveWhere(x=>x.Name==userName);
+                Users.Add(new OnlieUsersEntity {Id=id,Name=userName,ConnectionId=connectionId});
             }
         }
     }
@@ -39,6 +39,6 @@ namespace DamaWeb.Tools
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime Date { get; set; }
+        public string  ConnectionId { get; set; }
     }
 }

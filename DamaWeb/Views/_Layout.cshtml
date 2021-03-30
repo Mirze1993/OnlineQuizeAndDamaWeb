@@ -36,19 +36,23 @@
     <!-- AdminLTE -->
     <script src="~/dist/js/adminlte.min.js"></script>
     <!-- onlineUser -->
+    <script src="~/signalr/SignalR.js"></script>
     <script src="~/customerJS/Online.js"></script>
-
+    <script src="~/customerJS/Notif.js"></script>
     @RenderSection("Script", required: false)
-
+    
     <script>
         $(document).ready(function () {
             var checkboxValue = JSON.parse(localStorage.getItem('online'));
-            console.log(checkboxValue);
             if (checkboxValue != null) {
                 $("#online").prop('checked', checkboxValue)
             }
-            ShowOnline();
+
         });
+        connection.on("notifications", function () {
+            $("#badgeNotif").text("1");
+            CheckGamesDB();
+        })
     </script>
 </body>
 </html>

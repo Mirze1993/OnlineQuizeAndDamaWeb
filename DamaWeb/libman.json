@@ -30,6 +30,23 @@
         "js/bootstrap.min.js",
         "css/bootstrap.min.css"
       ]
+    },
+    {
+      "library": "signalr.js@2.4.1",
+      "destination": "wwwroot/signalr.js/"
+    },
+    {
+      "library": "microsoft-signalr@5.0.4",
+      "destination": "wwwroot/microsoft-signalr/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@5.0.4",
+      "destination": "wwwroot/microsoft/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
     }
   ]
 }

@@ -9,8 +9,11 @@ body {
     width: 100vw;
     height: 100vh;
     display: block;
-    background-image: url('../img/wood1.jpg');
-    
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  
+    background-image: url('../img/wood2.jpg')
 }
 
 .boardHeader {
@@ -73,19 +76,19 @@ body {
 }
 
 .whiteSimpleStone {
-    background-image: url('../img/wightstone.png');
+    background-image: url('../img/stones/white.png');
 }
 
 .blackSimpleStone {
-    background-image: url('../img/blackstone.png');
+    background-image: url('../img/stones/black.png');
 }
 
 .whiteQuenStone {
-    background-image: url('../img/wightstone+.png');
+    background-image: url('../img/stones/whiteDum.png');
 }
 
 .blackQuenStone {
-    background-image: url('../img/blackstone+.png');
+    background-image: url('../img/stones/blackDum.png');
 }
 
 .PossiblePlace {

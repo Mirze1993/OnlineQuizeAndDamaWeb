@@ -16,17 +16,21 @@
         @if (User.Identity.IsAuthenticated)
         {
 
-        <li class="custom-switch nav-link">
-             <input type="checkbox" class="custom-control-input"  id="online" onchange="ShowOnline()">
-            <label class=" custom-control-label" for="online">Online</label>
-        </li>
+            <li class="custom-switch nav-link">
+                <input type="checkbox" class="custom-control-input" id="online" onchange="ShowOnline()">
+                <label class=" custom-control-label" for="online">Online</label>
+            </li>
 
             <li class="nav-item">
-                <a class="nav-link" asp-action="---" asp-controller="-">
+                <a class="nav-link" id="NotifDropDown" data-toggle="dropdown" data-url="/Notification/GetLast5">
                     <i class="far fa-bell"></i>
-                    <span class="badge badge-danger navbar-badge">1</span>
+                    <span id="badgeNotif" class="badge badge-danger navbar-badge"></span>
                 </a>
+                <div id="notifshow" class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+
+                </div>
             </li>
+
 
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">

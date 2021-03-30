@@ -1,8 +1,5 @@
 ﻿<!DOCTYPE html>
-@{
-    int gameId = ViewBag.GameId;
-    var userName = User.Identity.Name;
-}
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -15,9 +12,14 @@
     <link href="~/fontawesome-free/css/all.css" rel="stylesheet" />
 </head>
 <body>
+    <input type="hidden" id="gameId" value="@ViewBag.GameId" />
+    <input type="hidden" id="userName" value="@User.Identity.Name" />
+
     <div class="mainDiv">
         <div class="boardHeader">
-
+            <input type="text"  id="message"/>
+            <button type="submit" onclick="SendMesage()">SendMesage</button>
+            <h5 id="resivemessage" style="margin:0"></h5>
         </div>
         <div class="gameBoard">
 
@@ -25,20 +27,54 @@
 
         <div class="boardFooter">
             <div>
-                <button class="btn "><i class="fa fa-home"></i></button>
-                <button class="btn"><i class="fa fa-clock"></i></button>
-                <button class="btn"><i class="fa fa-trash"></i></button>
+                <a asp-action="MainRoom" asp-controller="GameRoom" class="btn "><i class="fa fa-home"></i></a>
+                <button onclick="ChangeThema()" class="btn"><i class="fa fa-refresh"></i></button>
+                <button asp-action="Lose" asp-route-id="@ViewBag.GameId" asp-controller="GameRoom" class="btn"><i class="fa fa-flag"></i></button>
                 <button class="btn"><i class="fa fa-comment"></i></button>
                 <button class="btn"><i class="fa fa-handshake"></i></button>
             </div>
         </div>
     </div>
-
+    <script src="~/signalr/SignalR.js"></script>
     <script>
-         var queue = "";
+
+        //create connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withAutomaticReconnect()
+            .withUrl("/gamehub")
+            .build();
+
+        function start() {
+             try {
+                 connection.start().then(function () {
+                     connection.invoke("addgrup", gameId).catch(function (e) { console.log(e) });
+                 });
+            } catch (e) {
+                setTimeout(function () { start(); }, 4000);
+            }
+        };
+        start();
+        //chat
+        var oldmesage="";
+        connection.on("recivemessage", function (msg, username) {
+            $("#resivemessage").html("");
+            $("#resivemessage").append(oldmesage + "    " + username + " : " + msg);
+            oldmesage = username + " : " + msg+"****>";
+        });
+
+        function SendMesage() {
+            connection.invoke("SendMessage", $("#message").val(), gameId);
+            document.getElementById("message").value = '';
+        }
+        
+        var queue = "";
         var wightStoneUser = "";
-        var username="@userName";
+        var username = $('#userName').val();
+        var gameId = $('#gameId').val();
+        var lock = false;
+
         $(document).ready(function () {
+            
         //prepare stone function
         (function ($) {
             $.fn.StonePreppare = function (x, y,z,classname ) {
@@ -53,17 +89,14 @@
         //start game and prepare stone
                 $.ajax({
                 type: "POST",
-                url : "@Url.Action("StartGame","Game")",
-                data: {
-                   id:@gameId,
-                },
-                dataType: "text",
-                success: function (msg) {
-                    var pg = jQuery.parseJSON(msg);
-                    var wc = jQuery.parseJSON(pg.WhiteCoordinate);
-                    var bc = jQuery.parseJSON(pg.BlackCoordinate);
-                    queue = pg.Queue;
-                    wightStoneUser = pg.Gamer1;
+                url : "@Url.Action("StartGame", "Game")",
+                data: { id: gameId},
+                    success: function (msg) {
+                        var wc = JSON.parse( msg.whiteCoordinate);
+                        var bc = JSON.parse(msg.blackCoordinate);
+                    queue = msg.queue;
+                    wightStoneUser = msg.gamer1;
+
                     $(wc).each(function (i, value) {
                         var x = value.X;
                         var y = value.Y;
@@ -77,7 +110,8 @@
                         var z = value.Z;
                         if (z > 0) $(".gameBoard").StonePreppare(x, y,z, 'blackQuenStone');
                         else $(".gameBoard").StonePreppare(x, y,z, 'blackSimpleStone');
-                    });                             $(".whiteSimpleStone, .blackSimpleStone, .blackQuenStone, .whiteQuenStone ").click(function () {
+                    });
+                    $(".whiteSimpleStone, .blackSimpleStone, .blackQuenStone, .whiteQuenStone ").click(function () {
                         StoneClick($(this).attr("id"));
                     });
                     //rotate board
@@ -87,55 +121,91 @@
                 },
                 error: function (msg) {console.log(msg); }
             });
-            timer = setInterval(CkeckGame, 2000);
-
+           // timer = setInterval(CkeckGame, 2000);
+            
         });
-        var timer;
+
+        //move stone
+        connection.on("movedstone", function (msg) {
+            if (msg.indexOf('GameStatuse') > -1) {
+                alert(msg);
+                return;
+            }
+            // obj=PlayGame
+            var obj = jQuery.parseJSON(msg);
+            queue = obj.Queue;
+            var objMove = jQuery.parseJSON(obj.Move)
+            //stone dum
+            var dumX = objMove.DumX;
+            var dumY = objMove.DumY;
+            if (dumX > 0 || dumY > 0) {
+                var deletedStone = dumX + "" + dumY;
+                $("[id^='" + deletedStone + "']").remove();
+            }
+            //stone move
+            var idlike = objMove.OldX + "" + objMove.OldY;
+            var moveElement = $("[id^='" + idlike + "']");
+            moveElement.animate({ left: objMove.NewX * 12.5 + "%", top: objMove.NewY * 12.5 + "%" });
+            moveElement.attr("id", objMove.NewX + "" + objMove.NewY + "" + objMove.NewZ);
+            // change element from simple to quen
+            if (objMove.OldZ < 1 && objMove.NewZ > 0) {
+                if (moveElement.hasClass("whiteSimpleStone")) {
+                    moveElement.removeClass("whiteSimpleStone");
+                    moveElement.addClass("whiteQuenStone");
+                }
+                else if (moveElement.hasClass("blackSimpleStone")) {
+                    moveElement.removeClass("blackSimpleStone");
+                    moveElement.addClass("blackQuenStone");
+                }
+            }
+        });
+
+       // var timer;
         //Check game 2sec
-        function CkeckGame() {
-                $.ajax({
-                    type: "POST",
-                    url: "/Game/CkeckGame",
-                    data: { gameId: @gameId },
-                    dataType: "text",
-                    success: function (msg) {
-                        if (msg.indexOf('Win')>-1) {
-                            alert(msg);
-                            clearInterval(timer);
-                            return;
-                        }
-                        // obj=PlayGame
-                        var obj = jQuery.parseJSON(msg);
-                        queue = obj.Queue;
-                        var objMove = jQuery.parseJSON(obj.Move)
-                        //stone dum
-                        var dumX = objMove.DumX;
-                        var dumY = objMove.DumY;
-                        if (dumX > 0 || dumY > 0) {
-                            var deletedStone = dumX + "" + dumY;
-                            $("[id^='" + deletedStone + "']").remove();
-                        }
-                        //stone move
-                        var idlike = objMove.OldX + "" + objMove.OldY;
-                        var moveElement= $("[id^='" + idlike + "']");
-                        moveElement.animate({ left: objMove.NewX * 12.5 + "%", top: objMove.NewY * 12.5 + "%" });
-                        moveElement.attr("id", objMove.NewX + "" + objMove.NewY);
-                        // change element from simple to quen
-                        if (objMove.OldZ < 1 && objMove.NewZ > 0) {
-                            if (moveElement.hasClass("whiteSimpleStone")) {
-                                moveElement.removeClass("whiteSimpleStone");
-                                moveElement.addClass("whiteQuenStone");
-                            }
-                            else if (moveElement.hasClass("blackSimpleStone")) {
-                                moveElement.removeClass("blackSimpleStone");
-                                moveElement.addClass("blackQuenStone");
-                            }
-                        }
-                        },
-                        error: function (msg) {console.log(msg);}
-                    }
-                );
-    }
+        //function CkeckGame() {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/Game/CkeckGame",
+        //            data: { gameId: gameId },
+        //            dataType: "text",
+        //            success: function (msg) {
+        //                if (msg.indexOf('GameStatuse')>-1) {
+        //                    clearInterval(timer);
+        //                    alert(msg);
+        //                    return;
+        //                }
+        //                // obj=PlayGame
+        //                var obj = jQuery.parseJSON(msg);
+        //                queue = obj.Queue;
+        //                var objMove = jQuery.parseJSON(obj.Move)
+        //                //stone dum
+        //                var dumX = objMove.DumX;
+        //                var dumY = objMove.DumY;
+        //                if (dumX > 0 || dumY > 0) {
+        //                    var deletedStone = dumX + "" + dumY;
+        //                    $("[id^='" + deletedStone + "']").remove();
+        //                }
+        //                //stone move
+        //                var idlike = objMove.OldX + "" + objMove.OldY;
+        //                var moveElement= $("[id^='" + idlike + "']");
+        //                moveElement.animate({ left: objMove.NewX * 12.5 + "%", top: objMove.NewY * 12.5 + "%" });
+        //                moveElement.attr("id", objMove.NewX + "" + objMove.NewY);
+        //                // change element from simple to quen
+        //                if (objMove.OldZ < 1 && objMove.NewZ > 0) {
+        //                    if (moveElement.hasClass("whiteSimpleStone")) {
+        //                        moveElement.removeClass("whiteSimpleStone");
+        //                        moveElement.addClass("whiteQuenStone");
+        //                    }
+        //                    else if (moveElement.hasClass("blackSimpleStone")) {
+        //                        moveElement.removeClass("blackSimpleStone");
+        //                        moveElement.addClass("blackQuenStone");
+        //                    }
+        //                }
+        //                },
+        //                error: function (msg) {console.log(msg);}
+        //            }
+        //        );
+        //}
         //stone click function
 
         function StoneClick(id) {
@@ -143,13 +213,13 @@
             if (queue === username) {
                 var selectedStone = document.getElementById(id);
                 if (wightStoneUser === username && ($(selectedStone).hasClass("whiteSimpleStone") || $(selectedStone).hasClass("whiteQuenStone"))) {
-                    PossiblePlace(id); console.log("black");
+                    PossiblePlace(id);
                 } else if (wightStoneUser !== username && ($(selectedStone).hasClass("blackSimpleStone") || $(selectedStone).hasClass("blackQuenStone"))) {
                     PossiblePlace(id);
-                    console.log("black");
                     }
                 }
         }
+
         var oldX;
         var oldY;
         var oldZ;
@@ -168,7 +238,7 @@
                     x: oldX,
                     y: oldY,
                     z: oldZ,
-                    gameId:@gameId,
+                    gameId:gameId,
                 },
                 dataType: "text",
                 success: function (msg) {
@@ -208,35 +278,39 @@
                 SimpleMove(x, y);
             }
         }
-        function SimpleMove(x,y) {
+        function SimpleMove(x, y) {
+        queue = "";
         $.ajax({
             type: "POST",
             url: "/Game/Move",
             data: {
-                gameId: @gameId, oldX: oldX, oldY: oldY, oldZ: oldZ, newX: x, newY: y
+                gameId: gameId, oldX: oldX, oldY: oldY, oldZ: oldZ, newX: x, newY: y
             },
             dataType: "text",
-            success: function (msg) {
-                var obj = jQuery.parseJSON(msg);//obj=Move
-                if (obj != null) {
-                    var idlike = obj.OldX + "" + obj.OldY;
-                    var moveElement = $("[id^='" + idlike + "']");
-                    moveElement.animate({ left: obj.NewX * 12.5 + "%", top: obj.NewY * 12.5 + "%" });
-                    moveElement.attr("id", obj.NewX + "" + obj.NewY + "" + obj.NewZ);
-                    // change element from simple to quen
-                    if (obj.OldZ < 1 && obj.NewZ > 0) {
-                        if (moveElement.hasClass("whiteSimpleStone")) {
-                            moveElement.removeClass("whiteSimpleStone");
-                            moveElement.addClass("whiteQuenStone");
-                        }
-                        else if (moveElement.hasClass("blackSimpleStone")) {
-                            moveElement.removeClass("blackSimpleStone");
-                            moveElement.addClass("blackQuenStone");
-                        }
-                    }
-                    queue = "";
-                }
-            },
+            //success:
+            //    function (msg) {
+            //    console.log(msg);
+            //    var obj = jQuery.parseJSON(msg);//obj=Move
+            //    if (obj != null) {
+            //        var idlike = obj.OldX + "" + obj.OldY;
+            //        var moveElement = $("[id^='" + idlike + "']");
+            //        moveElement.animate({ left: obj.NewX * 12.5 + "%", top: obj.NewY * 12.5 + "%" });
+            //        moveElement.attr("id", obj.NewX + "" + obj.NewY + "" + obj.NewZ);
+            //        console.log(obj.NewZ);
+            //        // change element from simple to quen
+            //        if (obj.OldZ < 1 && obj.NewZ > 0) {
+            //            if (moveElement.hasClass("whiteSimpleStone")) {
+            //                moveElement.removeClass("whiteSimpleStone");
+            //                moveElement.addClass("whiteQuenStone");
+            //            }
+            //            else if (moveElement.hasClass("blackSimpleStone")) {
+            //                moveElement.removeClass("blackSimpleStone");
+            //                moveElement.addClass("blackQuenStone");
+            //            }
+            //        }
+
+            //    }
+            //},
             error: function (msg) { console.log(msg);  }
             });
         }
@@ -245,42 +319,49 @@
             type: "POST",
             url: "/Game/DumMove",
                 data: {
-                    gameId: @gameId, oldX: oldX, oldY: oldY, oldZ: oldZ, newX: x, newY: y
+                    gameId: gameId, oldX: oldX, oldY: oldY, oldZ: oldZ, newX: x, newY: y
             },
             dataType: "text",
-            success: function (msg) {
-                var obj = jQuery.parseJSON(msg);//0bj=Move
-                if (obj != null) {
-                    //remove stone
-                    var dumX = obj.DumX;
-                    var dumY = obj.DumY;
-                    console.log(dumX +""+ dumY);
-                    if (dumX > 0 || dumY > 0) {
-                        var deletedStone = dumX + "" + dumY;
-                        $("[id^='" + deletedStone + "']").remove();
-                    }
-                    //move
-                    var idlike = obj.OldX + "" + obj.OldY;
-                    var moveElement = $("[id^='" + idlike + "']");
-                    moveElement.animate({ left: obj.NewX * 12.5 + "%", top: obj.NewY * 12.5 + "%" });
-                    moveElement.attr("id", obj.NewX + "" + obj.NewY + "" + obj.NewZ);
-                    // change element from simple to quen
-                    if (obj.OldZ < 1 && obj.NewZ > 0) {
-                        if (moveElement.hasClass("whiteSimpleStone")) {
-                            moveElement.removeClass("whiteSimpleStone");
-                            moveElement.addClass("whiteQuenStone");
-                        }
-                        else if (moveElement.hasClass("blackSimpleStone")) {
-                            moveElement.removeClass("blackSimpleStone");
-                            moveElement.addClass("blackQuenStone");
-                        }
-                    }
-                    queue = "";
-                }
-            },
+            //success: function (msg) {
+            //    var obj = jQuery.parseJSON(msg);//0bj=Move
+            //    if (obj != null) {
+            //        //remove stone
+            //        var dumX = obj.DumX;
+            //        var dumY = obj.DumY;
+            //        console.log(dumX +""+ dumY);
+            //        if (dumX > 0 || dumY > 0) {
+            //            var deletedStone = dumX + "" + dumY;
+            //            $("[id^='" + deletedStone + "']").remove();
+            //        }
+            //        //move
+            //        var idlike = obj.OldX + "" + obj.OldY;
+            //        var moveElement = $("[id^='" + idlike + "']");
+            //        moveElement.animate({ left: obj.NewX * 12.5 + "%", top: obj.NewY * 12.5 + "%" });
+            //        moveElement.attr("id", obj.NewX + "" + obj.NewY + "" + obj.NewZ);
+            //        // change element from simple to quen
+            //        if (obj.OldZ < 1 && obj.NewZ > 0) {
+            //            if (moveElement.hasClass("whiteSimpleStone")) {
+            //                moveElement.removeClass("whiteSimpleStone");
+            //                moveElement.addClass("whiteQuenStone");
+            //            }
+            //            else if (moveElement.hasClass("blackSimpleStone")) {
+            //                moveElement.removeClass("blackSimpleStone");
+            //                moveElement.addClass("blackQuenStone");
+            //            }
+            //        }
+            //        queue = "";
+            //    }
+            //},
             error: function (msg) { console.log(msg);  }
          });
         }
+
+        function ChangeThema() {
+            var n = Math.floor(Math.random() * 4) + 1;
+            var name = "url('/img/wood" + n.toString() + ".jpg')"
+            $(".mainDiv").css({ 'background-image': name})
+        }
+
     </script>
 
 

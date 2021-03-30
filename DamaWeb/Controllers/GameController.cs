@@ -1,30 +1,38 @@
 ﻿using DamaWeb.GameFolder;
+using DamaWeb.Hubs;
 using DamaWeb.Repostory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Model.Models;
 using Model.UIGame;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DamaWeb.Controllers
 {
+    [Authorize]
     public class GameController : Controller
     {
         PlayGameRepository repository;
-        public GameController()
+        IHubContext<GameHub> hub;
+
+        public GameController( IHubContext<GameHub> _hub)
         {
             repository = new PlayGameRepository();
+            hub = _hub;
         }
-       
 
         [HttpPost]
-        public string StartGame(int id)
+        public JsonResult StartGame(int id)
         {
-            var pg = repository.GetByColumNameFist("GameId", id).Item1;
-            return JsonConvert.SerializeObject(pg);
+            var (pg,b) = repository.GetByColumNameFist("GameId", id);
+            if (!b) return new JsonResult("error") { StatusCode = (int)HttpStatusCode.InternalServerError };
+            return new JsonResult(pg);
         }
 
         [HttpPost]
@@ -34,7 +42,8 @@ namespace DamaWeb.Controllers
             UICoordinate uICoordinate = new UICoordinate();
             UIPlayGame uIPlaygame = new SrzJson().desrz(pg);
 
-            if (pg.Gamer1 == pg.Queue)
+            //uIPlaygame.BlackCoordinate.any(c=>c.X==x&&c.Y==y&&c.Z==z)
+            if (pg.Gamer1 == pg.Queue&& uIPlaygame.WhiteCoordinate.Any(c => c.X == x && c.Y == y && c.Z == z))
             {
                 uICoordinate = new PossiblePlace(
                     uIPlaygame,
@@ -43,8 +52,7 @@ namespace DamaWeb.Controllers
                     Convert.ToByte(z)).
                     White();
             }
-
-            else if (pg.Gamer2 == pg.Queue)
+            else if (pg.Gamer2 == pg.Queue&& uIPlaygame.BlackCoordinate.Any(c => c.X == x && c.Y == y && c.Z == z))
             {
                 uICoordinate = new PossiblePlace(
                     uIPlaygame,
@@ -57,7 +65,7 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
-        public string Move(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
+        public void Move(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
         {
             var pg = repository.GetByColumNameFist("GameId", gameID).Item1;
             var uiGame = new SrzJson().desrz(pg);
@@ -71,25 +79,27 @@ namespace DamaWeb.Controllers
                 );
 
             uiGame.Move.DumX = 0; uiGame.Move.DumY = 0;
-            if (uiGame.Gamer1 == uiGame.Queue)
+            if (uiGame.Gamer1 == uiGame.Queue&& uiGame.WhiteCoordinate.Any(c => c.X == oldX && c.Y == oldY && c.Z == oldZ))
             {
                 uiGame = moveItem.MoveWhite();
                 uiGame.Queue = uiGame.Gamer2;
             }
-            else if (uiGame.Gamer2 == uiGame.Queue)
+            else if (uiGame.Gamer2 == uiGame.Queue&& uiGame.BlackCoordinate.Any(c => c.X == oldX && c.Y == oldY && c.Z == oldZ))
             {
                 uiGame = moveItem.MoveBlack();
                 uiGame.Queue = uiGame.Gamer1;
             }
             var mm=new SrzJson().srz(uiGame);
-            if (new PlayGameRepository().Update(mm, pg.Id)) return "";
+            if (!new PlayGameRepository().Update(mm, pg.Id)) return ;
 
-            return JsonConvert.SerializeObject(uiGame.Move);
+            hub.Clients.Group(gameID.ToString()).SendAsync("movedstone", JsonConvert.SerializeObject(mm));
+
+            //return JsonConvert.SerializeObject(uiGame.Move);
         }
 
 
         [HttpPost]
-        public string DumMove(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
+        public void DumMove(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
         {
             var pg = repository.GetByColumNameFist("GameId", gameID).Item1;
             var uiGame = new SrzJson().desrz(pg);
@@ -105,26 +115,28 @@ namespace DamaWeb.Controllers
 
             if (uiGame.Gamer1 == uiGame.Queue) uiGame = moveItem.DumWhite();
             else if (uiGame.Gamer2 == uiGame.Queue) uiGame = moveItem.DumBlack();
+            var mm = new SrzJson().srz(uiGame);
+            if (!repository.Update(mm, pg.Id)) return;
 
-            if (!repository.Update(new SrzJson().srz(uiGame), pg.Id)) return "";
-
-            return JsonConvert.SerializeObject(uiGame.Move);
+            hub.Clients.Group(gameID.ToString()).SendAsync("movedstone", CkeckGame(mm));
+            //return JsonConvert.SerializeObject(uiGame.Move);
         }
 
-        [HttpPost]
-        public string CkeckGame(int gameId)
+        
+        public string CkeckGame(PlayGame pg)
         {
-            var pg = repository.GetByColumNameFist("GameId", gameId).Item1;
+            //var pg = repository.GetByColumNameFist("GameId", gameId).Item1;
             //any stone win
             if (!pg.BlackCoordinate.Contains("X") || !pg.WhiteCoordinate.Contains("X"))
             {
                 var gamesRepostory = new GamesRepository();
-                var g = gamesRepostory.GetByColumNameFist("Id", gameId).Item1;
+                var g = gamesRepostory.GetByColumNameFist("Id", pg.GameId).Item1;
                 g.Status = GameStatus.Close;
                 if (!pg.WhiteCoordinate.Contains("X")) g.WinUser = g.AcceptUser;
                 if (!pg.BlackCoordinate.Contains("X")) g.WinUser = g.RequestUser;
                 var b = gamesRepostory.Update(g, g.Id);
-                return "Win User " + g.WinUser;
+                var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+                return  "GameStatuse:Win User" +User.Identity.Name;
             }
             return JsonConvert.SerializeObject(pg);
         }

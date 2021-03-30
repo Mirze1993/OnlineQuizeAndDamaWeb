@@ -44,7 +44,7 @@ namespace DamaWeb.GameFolder
                     {
                         G.BlackCoordinate[i].Z = 1; G.Move.NewZ = 1;
                     }
-                    ;
+                    return G;
                 }
             }
             return G;
@@ -52,6 +52,7 @@ namespace DamaWeb.GameFolder
 
         public UIPlayGame MoveWhite()
         {
+            var a=G.WhiteCoordinate.FirstOrDefault(m => m.X == OldX && m.Y == OldY);
             for (int i = 0; i < G.WhiteCoordinate.Count; i++)
             {
                 if (G.WhiteCoordinate[i].X == OldX && G.WhiteCoordinate[i].Y == OldY)
@@ -62,6 +63,7 @@ namespace DamaWeb.GameFolder
                     {
                         G.WhiteCoordinate[i].Z = 1; G.Move.NewZ = 1;
                     }
+                    return G;
                 }
             }
             return G;
@@ -88,13 +90,16 @@ namespace DamaWeb.GameFolder
                 y1 = (byte)(y1 + y2);
             }
 
-
+            MoveWhite();
             var i1 = new WhitePossiblePlace(G).EveryWhereDum(NewX, NewY).DumCoordinates.Count;
-            var i2 = new WhiteQuenPossiblePlace(G).PossibleDum(NewX, NewY).DumCoordinates.Count;
+            int i2 = 0;
+            if (G.Move.NewZ == 1)
+                 i2 = new WhiteQuenPossiblePlace(G).PossibleDum(NewX, NewY).DumCoordinates.Count;
+
             if (i1 > 0 || i2 > 0)
                 G.Move.AgainDum = true;
             else { G.Queue = G.Gamer2; G.Move.AgainDum = false; }
-            return MoveWhite();
+            return G;
         }
 
         internal UIPlayGame DumBlack()
@@ -117,13 +122,16 @@ namespace DamaWeb.GameFolder
                 x1 = (byte)(x1 + x2);
                 y1 = (byte)(y1 + y2);
             }
-
+            MoveBlack();
             var i1 = new BlackPossiblePlace(G).EveryWhereDum(NewX, NewY).DumCoordinates.Count;
-            var i2 = new BlackQuenPossiblePlace(G).PossibleDum(NewX, NewY).DumCoordinates.Count;
+            int i2 = 0;
+            if (G.Move.NewZ == 1)
+                i2 = new BlackQuenPossiblePlace(G).PossibleDum(NewX, NewY).DumCoordinates.Count;
+
             if (i1 > 0 || i2 > 0)
                 G.Move.AgainDum = true;
             else { G.Queue = G.Gamer1; G.Move.AgainDum = false; }
-            return MoveBlack();
+            return G;
         }
     }
 }

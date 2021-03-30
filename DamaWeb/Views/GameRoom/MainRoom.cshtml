@@ -123,8 +123,13 @@
 
         $(document).ready(function () {
             CheckGamesDB();
-            var timer = setInterval(CheckGamesDB, 100000);
+            //var timer = setInterval(CheckGamesDB, 100000);
         });
+
+        connection.on("RefreshTables", function () {
+            CheckGamesDB();
+        });
+
         function CheckGamesDB() {
             $.ajax({
                     method: "post",
@@ -138,8 +143,7 @@
                 });
         }
 
-        function loadTable(obj) {
-            console.log(obj)
+        function loadTable(obj) {            
             WaitRequest.clear().draw();
             WaitAccept.clear().draw();
             ActiveGame.clear().draw();
@@ -169,7 +173,7 @@
                 }
                 //active
                 if (value.status == 'Start') { 
-                    var start = '<a href="/GameRoom/Start/'+value.id+'" class="btn btn-success"> <i class="fas fa-play"></i></a>';
+                    var start = '<a href="/GameRoom/Start/' + value.id +'" class="btn btn-success"> <i class="fas fa-play"></i></a>';
                     ActiveGame.row.add([
                         value.requestUserName,
                         value.acceptUserName,
@@ -182,6 +186,7 @@
 
         function AcceptRequest(id) {
             $.post("/GameRoom/AcceptRequest", { id: id }).done(function (event) {
+                CheckGamesDB();
                 if (event) {
                     toastr.success("Oyun isteyi qebul olundu", "success");
                 }
@@ -190,6 +195,7 @@
         }
         function RejectRequest(id) {
             $.post("/GameRoom/RejectRequest", { id: id }).done(function (event) {
+                CheckGamesDB();
                 if (event) {
                     toastr.info("Oyun levg olundu", "success");
                     CheckGamesDB();
