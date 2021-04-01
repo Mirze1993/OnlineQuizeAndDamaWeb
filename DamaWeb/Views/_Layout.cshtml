@@ -23,6 +23,8 @@
         @await Html.PartialAsync("_Head.cshtml")
         <div class="content-wrapper">
             @RenderBody()
+            <div id="chatarea">
+            </div>
         </div>
         @await Html.PartialAsync("_Footer.cshtml")
 
@@ -41,6 +43,7 @@
     <script src="~/customerJS/Notif.js"></script>
     @RenderSection("Script", required: false)
     
+
     <script>
         $(document).ready(function () {
             var checkboxValue = JSON.parse(localStorage.getItem('online'));

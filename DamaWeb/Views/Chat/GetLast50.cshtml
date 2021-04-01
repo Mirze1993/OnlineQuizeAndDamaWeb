@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "GetLast50";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+@section CSS{ 
+    <link href="~/customerScc/chat.css" rel="stylesheet" />
+}
+
+
+@section Script{ 
+    <script>
+        $(document).ready(function () {
+            $('#action_menu_btn').click(function () {
+                $('.action_menu').toggle();
+            });
+        });
+    </script>
+}

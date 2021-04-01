@@ -13,4 +13,18 @@ $(function () {
             }
         });       
     });
+    var placeholderChat = $('#chatarea');
+
+    $('#chatDropDown').click(function (event) {
+        console.log("sds");
+        var url = $(this).data('url'); placeholderChat.html("");
+        $.ajax({
+            url: url,
+            method: "post",
+
+            success: function (data) {
+                placeholderChat.html(data);
+            }
+        });
+    });
 })

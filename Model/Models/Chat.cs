@@ -12,5 +12,6 @@ namespace Model.Models
         public string Message { get; set; }
         public string FileName { get; set; }
         public DateTime Date { get; set; }
+        public bool IsRead { get; set; }
     }
 }
