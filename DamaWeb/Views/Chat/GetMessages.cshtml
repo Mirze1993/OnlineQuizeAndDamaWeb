@@ -4,21 +4,22 @@
     <div class="col-sm-3 offset-sm-9">
         <div class="card card-danger direct-chat direct-chat-danger">
             <div class="card-header">
-                <h3 class="card-title">Direct Chat</h3>
+                <h3 id="chatHead" class="card-title">Direct Chat</h3>
 
                 <div class="card-tools">
                     @if (Model != null)
                     {
-        <span data-toggle="tooltip" title="3 New Messages" class="badge">@Model.Sum(mm => mm.NoReadCount)</span>}
+                        <span id="SumNoRead" data-toggle="tooltip" class="badge">@Model.Sum(mm => mm.NoReadCount)</span>
+                    }
 
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <button type="button" class="btn btn-tool" onclick="minim()" data-card-widget="collapse">
                         <i class="fas fa-minus"></i>
                     </button>
                     <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Contacts"
                             data-widget="chat-pane-toggle">
                         <i class="fas fa-comments"></i>
                     </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <button type="button" class="btn btn-tool" onclick="remove()" data-card-widget="remove">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -33,20 +34,21 @@
                 <!-- Contacts are loaded here -->
                 <div class="direct-chat-contacts">
                     <ul class="contacts-list">
-                        <li>                           
+                        <li>
                             @if (Model?.Count > 0)
                             {
                                 for (int i = 0; i < Model.Count; i++)
                                 {
-                <button onclick="showChat('@Model[i].SenderId', '@Model[i].SenderName')" class="btn btn-success" data-toggle="tooltip" data-widget="chat-pane-toggle">
+                                    <button onclick="showChat('@Model[i].SenderId', '@Model[i].SenderName')" class="btn btn-success" data-toggle="tooltip" data-widget="chat-pane-toggle">
+                                        <img class="contacts-list-img" src="~/dist/img/avatar5.png" />
+                                        <span class="contacts-list-name">
+                                            @Model[i].SenderName &nbsp; <span id="@Model[i].SenderName">@Model[i].NoReadCount</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <small class=" float-right">@Model[i].LastDate.ToString("yyyy/MM/dd HH:mm:ss")</small>
+                                        </span>
+                                    </button>
 
-                    <span class="contacts-list-name">
-                        @Model[i].SenderName &nbsp; (@Model[i].Count)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <small class=" float-right">@Model[i].LastDate.ToString("yyyy/MM/dd HH:mm:ss")</small>
-                    </span>
-
-                </button>}
-        }
+                                }
+                            }
 
                         </li>
                         <!-- End Contact Item -->
@@ -73,125 +75,96 @@
 </div>
 <input type="hidden" value="@ViewBag.userid" id="userId" />
 <input type="hidden" value="@User.Identity.Name" id="UserName" />
+<input type="hidden" value=""  id="ActiveChatName" />
+<input type="hidden" value="" id="ActiveChatId" />
 <!--/.direct-chat -->
 <script src="~/customerJS/DateFormatter.js"></script>
-    <script>
-        function left(name, msg, time) {
-            var maindiv = $("<div></div>");
-            maindiv.addClass('direct-chat-msg');
+<script src="~/signalr/SignalR.js"></script>
+<script src="~/customerJS/createElements.js"></script>
+<script>
+    
 
-            var infodiv = $("<div></div>");
-            infodiv.addClass('direct-chat-infos clearfix');
+    var userid = $("#userId").val();
+    var name = "";
+    var senderid = 0;
+    var cueUserName = $("#UserName").val();
+    function showChat(senderId, senderName) {
+        $("#ActiveChatName").val(senderName);
+        $("#ActiveChatId").val(senderId);
+        $("#chatHead").text(senderName);
 
-            var spanname = $("<span></span>");
-            spanname.addClass('direct-chat-name float-left');
-            spanname.text(name);
 
-            var timee = $("<span></span>");
-            timee.addClass('direct-chat-timestamp float-right');
-            timee.text(time) ;
-
-            var img = $('<img />', {
-                src: '/dist/img/avatar5.png'
-            });
-            img.addClass("direct-chat-img");
-
-            var txt = $("<div></div>"); 
-            txt.addClass('direct-chat-text');
-            txt.text(msg);
-
-            infodiv.append(spanname);
-            infodiv.append(timee);
-            maindiv.append(infodiv);
-            maindiv.append(img);
-            maindiv.append(txt);
-            return maindiv;;
-        }
-        function right(name, msg, time) {
-            var maindiv = $("<div></div>");
-            maindiv.addClass('direct-chat-msg right');
-
-            var infodiv = $("<div></div>");
-            infodiv.addClass('direct-chat-infos clearfix');
-
-            var spanname = $("<span></span>");
-            spanname.addClass('direct-chat-name float-right');
-            spanname.text(name);
-
-            var timee = $("<span></span>");
-            timee.addClass('direct-chat-timestamp float-left');
-            timee.text(time);
-
-            infodiv.append(spanname);
-            infodiv.append(timee);
-
-            var txt = $("<div></div>");
-            txt.addClass('direct-chat-text');
-            txt.text(msg);
-
-            var img = $('<img />', {
-                src: '/dist/img/avatar5.png'
-            });
-            img.addClass("direct-chat-img");
-
-            maindiv.append(infodiv);
-            maindiv.append(img);
-            maindiv.append(txt);
-            return maindiv;
-        }
-
-        var userid = $("#userId").val();
-        var name = "";
-        var senderid = 0;
-        var cueUserName = $("#UserName").val();
-        function showChat(senderId, senderName) {
-            
-            name = senderName;
-            senderid = senderId;
-            $.ajax({
-                url: "Chat/GetLast50/" + senderId,
-                method: "post",
-                success:
-                    function (msgs) {
-                        //var result = JSON.parse(msgs);
-                        
-                        var chatbox = $("#chatbox");
-                        chatbox.html("");
-                        $(msgs).each(function (i, value) {
-                            if (value.senderId == userid) {
-                                var rm = right(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:mm:ss"));
-                                chatbox.append(rm);
-                            }
-                            else {
-                                var rm = left(name, value.message, dateFormat(new Date(value.date),"mmm dd HH:mm:ss"));
-                                console.log(rm);
-                                chatbox.append(rm);
-                            }
-                        });
-                        chatbox.animate({ scrollTop: chatbox.prop("scrollHeight") }, 1000);
+        name = senderName;
+        senderid = senderId;
+        $.ajax({
+            url: "/Chat/GetLast50/" + senderId,
+            method: "post",
+            success:
+                function (msgs) {
+                    //var result = JSON.parse(msgs);
+                    var sumNoRead = $("#SumNoRead");
+                    var noReaduser = $("#" + senderName);
+                    var c = sumNoRead.text() - noReaduser.text(); 
+                    if (c >= 0) {
+                        sumNoRead.text(c);
+                        $("#badgeChat").text(c);
                     }
-            });
-        }
+                    noReaduser.text("");
 
-        function sendMessage() {
-            if (senderid == 0) return;
-            var sendmsg = $("#writemessage").val();
-            var chatbox = $("#chatbox");
-            $.ajax({
-                url: "Chat/SendMesage/",
-                data: {
-                    recveid: senderid,
-                    message: sendmsg
-                },
-                method: "post",
-                success:
-                    function () {
-                        var rm = right(name, sendmsg, dateFormat(new Date($.now()), "mmm dd HH:mm:ss"));
-                        $("#writemessage").val('');
-                        chatbox.append(rm);
-                        chatbox.animate({ scrollTop: chatbox.prop("scrollHeight") }, 1000);
-                    }
-            });
-        }
+                    var chatbox = $("#chatbox");
+                    chatbox.html("");
+                    $(msgs).each(function (i, value) {
+                        if (value.senderId == userid) {
+                            var rm = right(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:mm:ss"));
+                            chatbox.append(rm);
+                        }
+                        else {
+                            var rm = left(name, value.message, dateFormat(new Date(value.date), "mmm dd HH:mm:ss"));
+                            chatbox.append(rm);
+                        }
+                    });
+                    chatbox.animate({ scrollTop: chatbox.prop("scrollHeight") }, 1000);
+                }
+        });
+    }
 
-    </script>
+    
+ 
+    function sendMessage() {
+        if (senderid == 0) return;
+        var sendmsg = $("#writemessage").val();
+        var chatbox = $("#chatbox");
+        $.ajax({
+            url: "/Chat/SendMesage",
+            data: {
+                recveid: senderid,
+                message: sendmsg
+            },
+            method: "post",
+            success:
+                function () {
+                    var rm = right(name, sendmsg, dateFormat(new Date($.now()), "mmm dd HH:mm:ss"));
+                    $("#writemessage").val('');
+                    chatbox.append(rm);
+                    chatbox.animate({ scrollTop: chatbox.prop("scrollHeight") }, 1000);
+                }
+        });
+    }
+
+    function remove() {;
+        $("#ActiveChatName").val("");
+        $("#ActiveChatId").val("");
+        $("#chatbox").html("");
+        $("#chatHead").text("Direct Chat");
+    }
+
+    function minim() {
+        $("#ActiveChatName").val("");
+        $("#ActiveChatId").val("");
+        $("#chatbox").html("");
+        $("#chatHead").text("Direct Chat");
+    }
+
+
+
+</script>

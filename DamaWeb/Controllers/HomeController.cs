@@ -112,6 +112,15 @@ namespace DamaWeb.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
+        public JsonResult getNotifAndChatCount()
+        {
+            var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            var m=repository.GetNotifAndChatCount(userid);
+            return new JsonResult(m);
+        }
+
+
         //[Authorize]
         //[HttpPost]
         //public void Online()

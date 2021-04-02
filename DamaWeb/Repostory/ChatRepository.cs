@@ -33,5 +33,17 @@ namespace DamaWeb.Repostory
                        comannder.SetParametr("Id",id) 
                     }).Item1;
         }
+
+        public List<Chat> GetLastIsNoReadMsg(int reciveId,int senderId )
+        {
+            using (var comannder = DBContext.CreateCommander())
+                return comannder.Reader<Chat>(
+                    commandText: "GetLastIsNoReadMsg"
+                    , commandType: System.Data.CommandType.StoredProcedure
+                    , parameters: new List<System.Data.Common.DbParameter> {
+                        comannder.SetParametr("ReciveId",reciveId),
+                        comannder.SetParametr("SenderId",senderId)
+                    }).Item1;
+        }
     }
 }
