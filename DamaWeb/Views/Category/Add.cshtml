@@ -1,0 +1,53 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/_Layout.cshtml";
+    List<SelectListItem> sl = ViewBag.sl;
+}
+<div class="container-fluid">
+    @if (Model != null && ViewBag.message != "Edit")
+    {
+        <h1>Elave olundu</h1>
+        <p>Name :  @Model.Name</p>
+        <br />
+        <p>Id :  @Model.Id</p>
+        <br />
+        <p>Description :  @Model.Description</p>
+        <br />
+        <p>Subject :  @Model.SubjectId</p>
+        <br />
+        <a asp-action="All" class="btn btn-danger">
+            <i class="fas fa-arrow-circle-left">
+                Back
+            </i>
+        </a>
+    }
+    else if (Model != null && ViewBag.message == "Edit")
+    {
+        <h1>Edit Category</h1>
+        <form asp-action="Update" asp-controller="Category">
+            <input type="hidden" asp-for="Id" />
+            <label>Name</label>
+            <input asp-for="Name" /><br />
+            <label>Description</label>
+            <input asp-for="Description" /><br />
+            <label>Subject</label>
+            <select asp-for="SubjectId" asp-items="sl"></select><br />
+            <button type="submit">Update</button>
+        </form>
+    }
+    else
+    {
+        <h1>Add Category</h1>
+        <form asp-action="Add" asp-controller="Category">
+            <label>Name</label>
+            <input asp-for="Name" /><br />
+            <label>Description</label>
+            <input asp-for="Description" /><br />
+            <label>Subject</label>
+            <select asp-for="SubjectId" asp-items="sl"></select><br />
+            <button type="submit">Add</button>
+        </form>
+    }
+
+</div>

@@ -1,0 +1,199 @@
+﻿@model Quize
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    @if (Model.Id > 0 && ViewBag.edit != "Update")
+    {
+        <label>Question:</label>@Model.Question<br />
+        @if (Model.QuestionImgSrc != null)
+        {
+            <img  asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
+        }
+
+
+        <label>A) </label>@Model.A<br />
+        @if (Model.AImgSrc != null)
+        {
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.AImgSrc" alt=""><br />
+        }
+
+        <label>B) </label>@Model.B<br />
+        @if (Model.BImgSrc != null)
+        {
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.BImgSrc" alt=""><br />
+        }
+
+        <label>C) </label>@Model.C<br />
+        @if (Model.CImgSrc != null)
+        {
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.CImgSrc" alt=""><br />
+        }
+
+        <label>D) </label>@Model.D<br />
+        @if (Model.DImgSrc != null)
+        {
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.DImgSrc" alt=""><br />
+        }
+
+        <label>E) </label>@Model.E<br />
+        @if (Model.EImgSrc != null)
+        {
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.EImgSrc" alt=""><br />
+        }
+
+        <label>Answer: </label>@Model.Answer<br />
+        <label>AnswerDecrpt </label>@Model.AnswerDecrpt<br />
+        @if (Model.PictureSrc != null)
+        {
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.PictureSrc" alt="">
+            <br />
+        }
+
+
+        @if (Model.VideoSrc != null)
+        {
+            <div class="embed-responsive embed-responsive-4by3 w-25 h-25">
+                <video controls class="embed-responsive-item" src="~/Quize/Video/@Model.VideoSrc"></video>
+            </div>
+            <br />
+        }
+
+        <a asp-action="AllByCategory" asp-route-categoryId="@Model.CategoryId" class="btn btn-danger">
+            <i class="fas fa-arrow-circle-left">
+                Back
+            </i>
+        </a>
+        <a asp-action="Update" asp-route-Id="@Model.Id" class="btn btn-success">
+            <i class="fas fa-pen">
+                Edit
+            </i>
+        </a>
+    }
+    else if (Model.Id > 0 && ViewBag.edit == "Update")
+    {
+        <h1>Update</h1>
+        <form enctype="multipart/form-data" method="post" asp-action="Update" asp-controller="Quize">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CategoryId" />
+            <input type="hidden" asp-for="PictureSrc" />
+            <input type="hidden" asp-for="QuestionImgSrc" />
+            <input type="hidden" asp-for="AImgSrc" />
+            <input type="hidden" asp-for="BImgSrc" />
+            <input type="hidden" asp-for="CImgSrc" />
+            <input type="hidden" asp-for="DImgSrc" />
+            <input type="hidden" asp-for="EImgSrc" />
+
+
+            <label>Question</label><br />
+            <textarea asp-for="Question"></textarea><br />
+            @if (Model.QuestionImgSrc != null)
+            {
+                <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
+            }
+            <label>QuestionImg</label><input type="file" accept="image/*" name="QuestionImg" /><br />
+
+            <label>A) </label><textarea asp-for="A"></textarea><br />
+            @if (Model.AImgSrc != null)
+            {
+                <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.AImgSrc" alt=""><br />
+            }
+            <label>AImg</label><input type="file" accept="image/*" name="AImg" /><br />
+
+
+            <label>B) </label><textarea asp-for="B"></textarea><br />
+            @if (Model.BImgSrc != null)
+            {
+                <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.BImgSrc" alt=""><br />
+            }
+            <label>BImg</label><input type="file" accept="image/*" name="BImg" /><br />
+
+
+            <label>C) </label><textarea asp-for="C"></textarea><br />
+            @if (Model.CImgSrc != null)
+            {
+                <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.CImgSrc" alt=""><br />
+            }
+            <label>CImg</label><input type="file" accept="image/*" name="CImg" /><br />
+
+
+            <label>D) </label><textarea asp-for="D"></textarea><br />
+            @if (Model.DImgSrc != null)
+            {
+                <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.DImgSrc" alt=""><br />
+            }
+            <label>DImg</label><input type="file" accept="image/*" name="DImg" /><br />
+
+            <label>E) </label><textarea asp-for="E"></textarea><br />
+            @if (Model.EImgSrc != null)
+            {
+                <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.EImgSrc" alt=""><br />
+            }
+            <label>EImg</label><input type="file" accept="image/*" name="EImg" /><br />
+
+            <label>Answer: </label><select asp-for="Answer">
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+                <option>E</option>
+            </select><br />
+            <label>AnswerDecrpt </label><input asp-for="AnswerDecrpt" /><br />
+            <label>AnswerImage</label><input type="file" accept="image/*" name="Img" /><br />
+            <label>AnswerVideo</label><input type="file" accept="video/*" name="Video" /><br />
+            <div class="row">
+                @if (Model.PictureSrc != null)
+                {
+                    <div class="col col-sm-3">
+                        <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.PictureSrc" alt="">
+                    </div>
+                }
+
+                @if (Model.VideoSrc != null)
+                {
+                    <div class="col col-sm-3">
+                        <div class="embed-responsive embed-responsive-4by3">
+                            <video controls class="embed-responsive-item" src="~/Quize/Video/@Model.VideoSrc"></video>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="btn btn-dark" type="submit">Update</button>
+        </form>
+    }
+    else
+    {
+        <h1>Add</h1>
+        <form enctype="multipart/form-data" method="post" asp-action="add" asp-controller="Quize">
+            <input type="hidden" asp-for="CategoryId" />
+
+            <label>Question</label><br />            
+            <textarea asp-for="Question"></textarea><br />
+            <label>QuestionImg</label><input type="file" accept="image/*" name="QuestionImg" /><br />
+
+            <label>A) </label><textarea asp-for="A"></textarea><br />
+            <label>AImg</label><input type="file" accept="image/*" name="AImg" /><br />
+            <label>B) </label><textarea asp-for="B"></textarea><br />
+            <label>BImg</label><input type="file" accept="image/*" name="BImg" /><br />
+            <label>C) </label><textarea asp-for="C"></textarea><br />
+            <label>CImg</label><input type="file" accept="image/*" name="CImg" /><br />
+            <label>D) </label><textarea asp-for="D"></textarea><br />
+            <label>DImg</label><input type="file" accept="image/*" name="DImg" /><br />
+            <label>E) </label><textarea asp-for="E"></textarea><br />
+            <label>EImg</label><input type="file" accept="image/*" name="EImg" /><br />
+            <label>Answer: </label><select asp-for="Answer">
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+                <option>E</option>
+            </select><br />
+            <label>AnswerDecrpt </label><input asp-for="AnswerDecrpt" /><br />
+            <label>Image</label><input type="file" accept="image/*" name="Img" /><br />
+            <label>Video</label><input type="file" accept="video/*" name="Video" /><br />
+            <button class="btn btn-dark" type="submit">Add</button>
+        </form>
+    }
+</div>

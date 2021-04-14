@@ -1,0 +1,48 @@
+﻿@model AppUser
+@{
+}
+<div class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                @if (Model != null)
+                {
+
+
+                    <h5>Istek gondermezden evvel zehmet olmasa muellim ile elaqe saxlayardiniz</h5>
+                }
+                else
+                { <h5>error</h5>}
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>x</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                @if (Model != null)
+                {
+
+                    <p>
+                        Elaqe saxlamaq ucun elaqe vaistelerinden:<br />
+                        Name: @Model.Name <br />
+                        Email: @Model.Email <br />
+                        Phone: @Model.Phone <br />
+                        ve ya sayitda yaradilan chatdan istifde ede bilersiniz
+                    </p>
+                }
+                else
+                {
+                    <p>xeta bas verdi</p>
+                }
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                @if (Model != null)
+                {
+                    <button type="button" class="btn btn-success" data-send="modal" data-value="@Model.Id">Follow</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

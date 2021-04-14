@@ -31,7 +31,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a id="chatDropDown" class="nav-link"  data-url="/Chat/GetMessages">
+                <a id="chatDropDown" class="nav-link" data-url="/Chat/GetMessages">
                     <i class="far fa-comments"></i>
                     <span id="badgeChat" class="badge badge-danger navbar-badge "></span>
                 </a>
@@ -84,8 +84,47 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
-                with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
 
+                <li class="nav-item">
+                    <a asp-action="SelectGroupe" asp-controller="Follow" class="nav-link">
+                        <i class="nav-icon fas fa-briefcase"></i>
+                        <p>
+                            Join Quizzes Groupe
+                        </p>
+                    </a>
+                </li>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a asp-action="All" asp-controller="Subject" class="nav-link">
+                            <i class="nav-icon fas fa-suitcase"></i>
+                            <p>
+                                Subject
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                {
+                    <li class="nav-item">
+                        <a asp-action="All" asp-controller="Category" class="nav-link">
+                            <i class="nav-icon fas fa-align-justify"></i>
+                            <p>
+                                Category
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-action="All" asp-controller="StudentGroup" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Students Group
+                            </p>
+                        </a>
+                    </li>
+                }
                 <li class="nav-item">
                     <a asp-action="MainRoom" asp-controller="GameRoom" class="nav-link">
                         <i class="nav-icon fas fa-gamepad"></i>
@@ -98,10 +137,12 @@
                     <a asp-action="UsersIndex" asp-controller="Users" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
-                            Users
+                            Contacts
                         </p>
                     </a>
                 </li>
+
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

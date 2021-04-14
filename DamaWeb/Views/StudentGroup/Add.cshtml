@@ -1,0 +1,50 @@
+﻿@model StudentGroup
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    @if (Model != null && ViewBag.message != "Edit")
+    {
+        <h1>Elave olundu</h1>
+        <p>Name :  @Model.Name</p>
+        <br />
+        <p>Id :  @Model.Id</p>
+        <br />
+        <p>Description :  @Model.Description</p>
+        <br />
+
+        <a asp-action="All" class="btn btn-danger">
+            <i class="fas fa-arrow-circle-left">
+                Back
+            </i>
+        </a>
+    }
+    else if (Model != null && ViewBag.message == "Edit")
+    {
+        <h1>Edit Group</h1>
+        <form asp-action="Update" asp-controller="StudentGroup">
+            <input type="hidden" asp-for="CreaterId" />
+            <input type="hidden" asp-for="Id" />
+            <label>Name</label>
+            <input asp-for="Name" /><br />
+            <label>Description</label>
+            <input asp-for="Description" /><br />
+            <button type="submit">Update</button>
+        </form>
+    }
+    else
+    {
+        <h1>Add Group</h1>
+        <form asp-action="Add" asp-controller="StudentGroup">
+            <label>Name</label>
+            <input asp-for="Name" /><br />
+            <label>Description</label>
+            <input asp-for="Description" /><br />
+            <button type="submit">Add</button>
+        </form>
+    }
+
+</div>
+

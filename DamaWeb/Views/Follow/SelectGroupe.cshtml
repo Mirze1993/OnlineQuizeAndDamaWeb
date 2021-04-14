@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "SelectGroupe";
+    Layout = "~/Views/_Layout.cshtml";
+    List<SelectListItem> sl = ViewBag.sl;
+}
+@section CSS{
+    <link href="~/bootstrap/css/toastr.min.css" rel="stylesheet" />
+}
+<div id="placeholder"></div>
+<div class="container-fluid">
+    <label>Select subject: </label>
+    <select id="slSubject" onchange="changeSubject(this)" asp-items="sl"></select><br />
+
+    <label>Select Teacher: </label>
+    <select id="slTeacher" onchange="changeTeacher(this)"></select>
+    <br />
+    <button type="button"  data-toggle="Follow-Teacher" class="btn btn-outline-success">Follow</button>
+
+    <p id="catagores"></p>
+</div>
+
+@section Script{
+    <script src="~/bootstrap/alertjs/toastr.min.js"></script>
+    <script>
+
+        var placeholder = $('#placeholder');
+
+        $('button[data-toggle="Follow-Teacher"]').click(function (event) {
+            var teacherid = $('#slTeacher').val();
+            $.ajax({
+                method: "post",
+                url: "/Follow/FollowTeacher",
+                data: {
+                    teacherId: teacherid
+                },
+                success: function (e) {
+                    placeholder.html(e);
+                    placeholder.find('.modal').modal('show');
+                },
+                error: function (e) {
+
+                }
+            });
+        })
+
+
+
+        placeholder.on('click', '[data-send="modal"]', function (e) {            
+            var teacherId = $(this).data('value');
+            var subjectId = $("#slSubject").val();
+            $.ajax({
+                method: "post",
+                data: {
+                    teacherId: teacherId,
+                    subjectId:subjectId
+                },
+                url: "/Follow/FollowRequest",
+                success: function (ee) {
+                    console.log("eee")
+                    if (ee == 0) toastr.error("xeta bas verdi");
+                    if (ee == -1) toastr.info("Aktiv istek vardir");
+                    if (ee > 0) toastr.success("istek ugurla gonderildi");
+                    placeholder.find('.modal').modal('hide');
+                },
+                error: function (e) {
+                    console.log("Wdwed")
+                }
+            });
+        })
+
+        
+
+        function changeSubject(sel) {
+            $.ajax({
+                method: "post",
+                url: "/Follow/SelectTeacher",
+                data: {
+                    subjectId: sel.value
+                },
+                success: function (e) {
+                    $('#slTeacher').empty();
+                    $(e).each(function (i, item) {
+                        $('#slTeacher').append($('<option>', {
+                            value: item.id,
+                            text: item.value
+                        }));
+                    })
+
+                },
+                error: function (e) {
+                    $('#slTeacher').empty();
+                    $('#catagores').html("");
+                }
+            });
+        }
+
+        function changeTeacher(sel) {
+            $.ajax({
+                method: "post",
+                url: "/Follow/GetCategores",
+                data: {
+                    teacherID: sel.value
+                },
+                success: function (e) {
+                    $('#catagores').html("");
+                    $(e).each(function (i, item) {
+                        var l = item.name + " (" + item.description + ")<br/>"
+                        $('#catagores').append(l);
+                    })
+                },
+                error: function (e) {
+                    $('#catagores').html("");
+                }
+            });
+        }
+
+    </script>
+}

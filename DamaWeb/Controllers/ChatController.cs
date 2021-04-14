@@ -19,11 +19,8 @@ namespace DamaWeb.Controllers
         {
             hub = _hub;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"> other user Id</param>
-        /// <returns></returns>
+      
+        [HttpPost]
         public JsonResult GetLast50(int id)
         {
             var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
@@ -32,7 +29,7 @@ namespace DamaWeb.Controllers
             msg.Reverse();
             return new JsonResult(msg);
         }
-
+        [HttpPost]
         public void SendMesage(int recveid, string message)
         {
             var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
@@ -40,7 +37,8 @@ namespace DamaWeb.Controllers
             rep.Insert(new Model.Models.Chat { Date = DateTime.Now, Message = message, ReciveId = recveid, SenderId = userid });
             hub.Clients.User(recveid.ToString()).SendAsync("ChatNotif", User.Identity.Name, userid);
         }
-
+        
+        [HttpPost]
         public IActionResult GetMessages()
         {
             var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
@@ -50,6 +48,7 @@ namespace DamaWeb.Controllers
             return PartialView("GetMessages",msgs);
         }
 
+        [HttpPost]
         public JsonResult GetLastIsNoReadMsg(int senderId)
         {
             var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);

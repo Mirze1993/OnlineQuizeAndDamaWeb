@@ -61,6 +61,9 @@ namespace DamaWeb
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStatusCodePagesWithReExecute("/Error?statusCode={0}");
+            app.UseExceptionHandler("/Exception");
+
             app.UseStaticFiles();
             app.UseRouting();
 

@@ -10,6 +10,7 @@ namespace DamaWeb.Controllers
 {
     public class NotificationController : Controller
     {
+        
         public IActionResult GetLast5()
         {
             var rep = new NotificationRepostoriy();
@@ -18,6 +19,7 @@ namespace DamaWeb.Controllers
             return PartialView("GetLast5", model);
         }
 
+        
         public IActionResult GetNotif(int id,string type)
         {
             NotificationType t;

@@ -115,11 +115,11 @@
                     chatbox.html("");
                     $(msgs).each(function (i, value) {
                         if (value.senderId == userid) {
-                            var rm = right(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:mm:ss"));
+                            var rm = right(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:MM:ss"));
                             chatbox.append(rm);
                         }
                         else {
-                            var rm = left(name, value.message, dateFormat(new Date(value.date), "mmm dd HH:mm:ss"));
+                            var rm = left(name, value.message, dateFormat(new Date(value.date), "mmm dd HH:MM:ss"));
                             chatbox.append(rm);
                         }
                     });

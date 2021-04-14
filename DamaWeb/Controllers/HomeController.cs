@@ -47,9 +47,9 @@ namespace DamaWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var (u,b) = repository.GetByColumNameFist("UserName", model.UserName);
+                var (u, b) = repository.GetByColumNameFist("UserName", model.UserName);
 
-                if (!b||u!=default(AppUser))
+                if (!b || u != default(AppUser))
                 {
                     ModelState.AddModelError("", $"{model.UserName} is alreay  use");
                     return View();
@@ -81,13 +81,15 @@ namespace DamaWeb.Controllers
                         IsPersistent = login.RememberMe,
                     };
 
-
                     var claims = new List<Claim>()
                     {
                         new Claim(ClaimTypes.NameIdentifier,u.Id.ToString()),
                         new Claim(ClaimTypes.Name,u.UserName),
                     };
-                   // role.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.RoleName)));
+
+                    var (role, rb) = repository.GetWithCondition<UserClaims>($"UserId={u.Id} and Type ='Role'");
+                    if (rb) if (role != null)
+                            role.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.Value)));
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -113,27 +115,13 @@ namespace DamaWeb.Controllers
         }
 
         [Authorize]
+        [HttpPost]
         public JsonResult getNotifAndChatCount()
         {
             var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
-            var m=repository.GetNotifAndChatCount(userid);
+            var m = repository.GetNotifAndChatCount(userid);
             return new JsonResult(m);
         }
 
-
-        //[Authorize]
-        //[HttpPost]
-        //public void Online()
-        //{
-        //    var obj=User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        //    if (string.IsNullOrEmpty(obj)) return;
-        //    ConnectionMapping.AddUser(User.Identity.Name,Convert.ToInt32(obj));
-        //}
-        //[Authorize]
-        //[HttpPost]
-        //public JsonResult GetOnlineUsers()
-        //{
-        //    return new JsonResult(ConnectionMapping.Users);
-        //}
     }
 }

@@ -18,7 +18,7 @@ $(function () {
         //var form = $(this).parents('.modal').find('form');
         //var url = form.attr('action');
         //var senddata = form.serialize();
-        
+       
         var id = $(this).data('value');
         var urll = "/GameRoom/RequestGame/" + id
         $.ajax({
