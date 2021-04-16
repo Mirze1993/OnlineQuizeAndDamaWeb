@@ -1,0 +1,40 @@
+﻿@model UICategoryGroup
+@{
+    ViewData["Title"] = "AddCategory";
+    Layout = "~/Views/_Layout.cshtml";
+
+    List<SelectListItem> sl = ViewBag.allgroups;
+}
+@section CSS{
+    <!-- Select2 -->
+    <link href="~/Select2/select2.min.css" rel="stylesheet" />
+    <link href="~/Select2/select2-bootstrap4.min.css" rel="stylesheet" />
+}
+<div class="container-fluid">
+    <form asp-action="UpdateCategoryGroup" asp-controller="StudentGroup">
+        <input type="hidden" asp-for="GroupId" />
+        <br />
+        <input type="text" asp-for="GruopeName" />
+        <br />
+        @for (int i = 0; i < @Model.SelectedCategoryIds.Count; i++)
+        {
+            <input type="hidden" value="@Model.SelectedCategoryIds[i]"  name="oldCategories[@i]"/>
+        }
+
+        <input type="hidden" value="TeacherId" />
+        <br />
+        <select style="width: 100%;" class="select2" asp-for="@Model.SelectedCategoryIds" asp-items="sl" multiple="multiple"></select>
+        <button type="submit"> update</button>
+    </form>
+</div>
+
+@section Script{
+    <script src="~/Select2/select2.full.min.js"></script>
+    <script>
+
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+
+    </script>
+}

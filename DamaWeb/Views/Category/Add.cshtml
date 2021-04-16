@@ -27,6 +27,7 @@
         <h1>Edit Category</h1>
         <form asp-action="Update" asp-controller="Category">
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UserId" />
             <label>Name</label>
             <input asp-for="Name" /><br />
             <label>Description</label>

@@ -34,9 +34,48 @@ namespace DamaWeb.Repostory
             using (var commander = DBContext.CreateCommander())
             {               
                 var sqlparams = new List<System.Data.Common.DbParameter> {
-                     commander.SetParametr("@TecherId",teacherId),                    
+                     commander.SetParametr("TecherId",teacherId),                    
                 };
-                return commander.Reader<UIStudentTeacher>("Follow", commandType: System.Data.CommandType.StoredProcedure,
+                return commander.Reader<UIStudentTeacher>("GetStudentsByTecherId", commandType: System.Data.CommandType.StoredProcedure,
+                    parameters: sqlparams).Item1;
+            }
+        }
+
+        public List<UIStudentTeacher> WaitApproveFollow (int teacherId)
+        {
+            using (var commander = DBContext.CreateCommander())
+            {
+                var sqlparams = new List<System.Data.Common.DbParameter> {
+                     commander.SetParametr("TeacherId",teacherId),
+                };
+                return commander.Reader<UIStudentTeacher>("WaitApproveFollow", 
+                    commandType: System.Data.CommandType.StoredProcedure,
+                    parameters: sqlparams).Item1;
+            }
+        }
+
+        public StudentTeacher GetStudentTeacher(int teacherId,int studentId)
+        {
+            using (var commander = DBContext.CreateCommander())
+            {
+                var sqlparams = new List<System.Data.Common.DbParameter> {
+                     commander.SetParametr("TecherId",teacherId),
+                     commander.SetParametr("StudentId",studentId),
+                };
+                return commander.ReaderFist<StudentTeacher>("GetStudentTeacher", commandType: System.Data.CommandType.StoredProcedure,
+                    parameters: sqlparams).Item1;
+            }
+        }
+
+        public List<UICategoryINGroupe> SelectTecherGroupeCategory(int teacherId, int groupId)
+        {
+            using (var commander = DBContext.CreateCommander())
+            {
+                var sqlparams = new List<System.Data.Common.DbParameter> {
+                     commander.SetParametr("teacherId",teacherId),
+                     commander.SetParametr("groupId",groupId),
+                };
+                return commander.Reader<UICategoryINGroupe>("SelectTecherGroupeCategory", commandType: System.Data.CommandType.StoredProcedure,
                     parameters: sqlparams).Item1;
             }
         }

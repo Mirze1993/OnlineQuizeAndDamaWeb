@@ -14,5 +14,6 @@ namespace Model.UIEntites
         public bool Status { get; set; }
         public string StudentName { get; set; }
         public string GroupName { get; set; }
+        public string StudentPhone { get; set; }       
     }
 }

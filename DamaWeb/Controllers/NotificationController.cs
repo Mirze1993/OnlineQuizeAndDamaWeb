@@ -28,6 +28,8 @@ namespace DamaWeb.Controllers
             rep.Delet(id);
             if (t == NotificationType.GameAccept || t == NotificationType.GameReject || t == NotificationType.GameRequest)
                 return RedirectToAction("MainRoom", "GameRoom");
+            if(t==NotificationType.Follow)
+                return RedirectToAction("WaitApproveFollow", "Follow");
             return RedirectToAction("Index", "Home");
         }
     }

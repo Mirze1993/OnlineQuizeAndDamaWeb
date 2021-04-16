@@ -10,7 +10,7 @@
         <label>Question:</label>@Model.Question<br />
         @if (Model.QuestionImgSrc != null)
         {
-            <img  asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
+            <img   asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
         }
 
 
@@ -85,22 +85,24 @@
             <input type="hidden" asp-for="CImgSrc" />
             <input type="hidden" asp-for="DImgSrc" />
             <input type="hidden" asp-for="EImgSrc" />
+            <input type="hidden" asp-for="VideoSrc" />            
 
 
             <label>Question</label><br />
             <textarea asp-for="Question"></textarea><br />
             @if (Model.QuestionImgSrc != null)
             {
-                <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
+                <img  asp-append-version="true" class="img-thumbnail w-25 h-25" 
+                     src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
             }
-            <label>QuestionImg</label><input type="file" accept="image/*" name="QuestionImg" /><br />
+            <label>QuestionImg</label><input class="imgupload" type="file" accept="image/*" name="QuestionImg" /><br />
 
             <label>A) </label><textarea asp-for="A"></textarea><br />
             @if (Model.AImgSrc != null)
             {
                 <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.AImgSrc" alt=""><br />
             }
-            <label>AImg</label><input type="file" accept="image/*" name="AImg" /><br />
+            <label>AImg</label><input class="imgupload" type="file" accept="image/*" name="AImg" /><br />
 
 
             <label>B) </label><textarea asp-for="B"></textarea><br />
@@ -108,7 +110,7 @@
             {
                 <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.BImgSrc" alt=""><br />
             }
-            <label>BImg</label><input type="file" accept="image/*" name="BImg" /><br />
+            <label>BImg</label><input class="imgupload" type="file" accept="image/*" name="BImg" /><br />
 
 
             <label>C) </label><textarea asp-for="C"></textarea><br />
@@ -116,7 +118,7 @@
             {
                 <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.CImgSrc" alt=""><br />
             }
-            <label>CImg</label><input type="file" accept="image/*" name="CImg" /><br />
+            <label>CImg</label><input class="imgupload" type="file" accept="image/*" name="CImg" /><br />
 
 
             <label>D) </label><textarea asp-for="D"></textarea><br />
@@ -124,14 +126,14 @@
             {
                 <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.DImgSrc" alt=""><br />
             }
-            <label>DImg</label><input type="file" accept="image/*" name="DImg" /><br />
+            <label>DImg</label><input class="imgupload" type="file" accept="image/*" name="DImg" /><br />
 
             <label>E) </label><textarea asp-for="E"></textarea><br />
             @if (Model.EImgSrc != null)
             {
                 <img asp-append-version="true" class="img-thumbnail" src="~/Quize/Picture/@Model.EImgSrc" alt=""><br />
             }
-            <label>EImg</label><input type="file" accept="image/*" name="EImg" /><br />
+            <label>EImg</label><input class="imgupload" type="file" accept="image/*" name="EImg" /><br />
 
             <label>Answer: </label><select asp-for="Answer">
                 <option>A</option>
@@ -141,8 +143,8 @@
                 <option>E</option>
             </select><br />
             <label>AnswerDecrpt </label><input asp-for="AnswerDecrpt" /><br />
-            <label>AnswerImage</label><input type="file" accept="image/*" name="Img" /><br />
-            <label>AnswerVideo</label><input type="file" accept="video/*" name="Video" /><br />
+            <label>AnswerImage</label><input class="imgupload" type="file" accept="image/*" name="Img" /><br />
+            <label>AnswerVideo</label><input id="Video" type="file" accept="video/*" name="Video" /><br />
             <div class="row">
                 @if (Model.PictureSrc != null)
                 {
@@ -171,18 +173,18 @@
 
             <label>Question</label><br />            
             <textarea asp-for="Question"></textarea><br />
-            <label>QuestionImg</label><input type="file" accept="image/*" name="QuestionImg" /><br />
+            <label>QuestionImg</label><input class="imgupload" type="file" accept="image/*" name="QuestionImg" /><br />
 
             <label>A) </label><textarea asp-for="A"></textarea><br />
-            <label>AImg</label><input type="file" accept="image/*" name="AImg" /><br />
+            <label>AImg</label><input class="imgupload" type="file" accept="image/*" name="AImg" /><br />
             <label>B) </label><textarea asp-for="B"></textarea><br />
-            <label>BImg</label><input type="file" accept="image/*" name="BImg" /><br />
+            <label>BImg</label><input class="imgupload" type="file" accept="image/*" name="BImg" /><br />
             <label>C) </label><textarea asp-for="C"></textarea><br />
-            <label>CImg</label><input type="file" accept="image/*" name="CImg" /><br />
+            <label>CImg</label><input class="imgupload" type="file" accept="image/*" name="CImg" /><br />
             <label>D) </label><textarea asp-for="D"></textarea><br />
-            <label>DImg</label><input type="file" accept="image/*" name="DImg" /><br />
-            <label>E) </label><textarea asp-for="E"></textarea><br />
-            <label>EImg</label><input type="file" accept="image/*" name="EImg" /><br />
+            <label>DImg</label><input class="imgupload" type="file" accept="image/*" name="DImg" /><br />
+            <label>E) </label><textarea  asp-for="E"></textarea><br />
+            <label>EImg</label><input class="imgupload"  type="file" accept="image/*" name="EImg" /><br />
             <label>Answer: </label><select asp-for="Answer">
                 <option>A</option>
                 <option>B</option>
@@ -191,9 +193,30 @@
                 <option>E</option>
             </select><br />
             <label>AnswerDecrpt </label><input asp-for="AnswerDecrpt" /><br />
-            <label>Image</label><input type="file" accept="image/*" name="Img" /><br />
-            <label>Video</label><input type="file" accept="video/*" name="Video" /><br />
+            <label>Image</label><input class="imgupload" type="file" accept="image/*" name="Img" /><br />
+            <label>Video</label><input id="Video" type="file" accept="video/*" name="Video" /><br />
             <button class="btn btn-dark" type="submit">Add</button>
         </form>
     }
 </div>
+
+@section Script{ 
+<script>
+    $(".imgupload").on("change", function () {
+
+        const size = (this.files[0].size / 1024 /1024).toFixed(2);
+        if (size > 4) {
+            alert("File must be the size of 4 MB");
+            $(this).val(null);
+        }
+    })
+    $("#Video").on("change", function () {
+
+        const size = (this.files[0].size / 1024 / 1024).toFixed(2);
+        if (size > 50) {
+            alert("File must be the size of 50 MB");
+            $(this).val(null);
+        }
+    })
+</script>
+}

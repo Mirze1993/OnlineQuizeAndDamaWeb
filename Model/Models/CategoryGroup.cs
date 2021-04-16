@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Model.Models
 {
-    public class LessonsGroupe
+    public class CategoryGroup
     {
         public int Id { get; set; }
-        public int GroupeId { get; set; }
+        public int GroupId { get; set; }
         public int CategoryId { get; set; }
     }
 }
