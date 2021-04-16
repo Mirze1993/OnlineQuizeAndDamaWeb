@@ -1,0 +1,199 @@
+﻿@model List<Quize>
+@{
+    ViewData["Title"] = "StartQuize";
+    Layout = "~/Views/_Layout.cshtml";
+}
+@section CSS{
+    <style>
+        #nav-controls {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    @if (Model != null)
+    {
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <a class="btn btn-outline-info" id="btn-@i" href="#divv+@i">@(i+1)</a>
+        }
+
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <div id="divv+@i">
+                <form>
+                    <h6><i class="fa fa-question-circle" aria-hidden="true"></i>@(i+1))  @Model[i].Question</h6>
+                    @if (Model[i].QuestionImgSrc != null)
+                    {
+                        <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].QuestionImgSrc" alt=""><br />
+                    }<br />
+
+
+                    <input type="radio" name="r@(i)" id="ra/@i" value="A" />
+                    <label for="ra/@i">
+                        A)
+                        @Model[i].A
+                        @if (Model[i].AImgSrc != null)
+                        {
+                            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].AImgSrc" alt=""><br />
+                        }
+                    </label><br />
+
+
+                    <input type="radio" name="r@(i)" id="rb/@i" value="B" />
+                    <label for="rb/@i">
+                        B)
+                        @Model[i].B
+                        @if (Model[i].BImgSrc != null)
+                        {
+                            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].BImgSrc" alt=""><br />
+                        }
+                    </label><br />
+
+
+
+                    <input type="radio" name="r@(i)" id="rc/@i" value="C" />
+                    <label for="rc/@i">
+                        C)
+                        @Model[i].C
+                        @if (Model[i].CImgSrc != null)
+                        {
+                            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].CImgSrc" alt=""><br />
+                        }
+                    </label><br />
+
+
+                    <input type="radio" name="r@(i)" id="rd/@i" value="D" />
+                    <label for="rd/@i">
+                        D)
+                        @Model[i].D
+                        @if (Model[i].DImgSrc != null)
+                        {
+                            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].DImgSrc" alt=""><br />
+                        }
+                    </label><br />
+
+                    <input type="radio" name="r@(i)" id="re/@i" value="E" />
+                    <label for="re/@i">
+                        E)
+                        @Model[i].E
+                        @if (Model[i].EImgSrc != null)
+                        {
+                            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].EImgSrc" alt=""><br />
+                        }
+                    </label><br />
+                    <div id="cavab@(i)"></div>
+
+                    <div id="descr@(i)" style="display:none">
+                        <input id="Correct@(i)" type="hidden" asp-for="@Model[i].Answer" />                       
+                        <label>AnswerDecrpt </label>@Model[i].AnswerDecrpt<br />
+                        @if (Model[i].PictureSrc != null)
+                        {<p>Dscription Image</p>
+                            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model[i].PictureSrc" alt="">
+                            <br />
+                        }
+
+
+                        @if (Model[i].VideoSrc != null)
+                        {
+                            <p>Dscription Video</p>
+                            <div class="embed-responsive embed-responsive-4by3 w-25 h-25">
+                                <video controls class="embed-responsive-item" src="~/Quize/Video/@Model[i].VideoSrc"></video>
+                            </div>
+                            <br />
+                        }
+                        <br />
+                    </div>
+                </form>
+            </div>
+        }
+
+    }
+</div>
+
+<div id="nav-controls">
+
+    <a href="javascript:top.window.scrollTo(0,0)" title="Top">
+        <img alt="Top" border="0" src="~/img/arrow/go-top.png">
+    </a>
+    <br>
+    <a href="javascript:window.scrollTo(document.body.clientWidth,document.body.clientHeight/3)" title="Center">
+        <img alt="Middle page" border="0" src="~/img/arrow/go-center.png">
+    </a>
+    <br>
+    <a href="javascript:window.scrollTo(document.body.clientWidth,document.body.clientHeight)" title="Bottom">
+        <img alt="Bottom" border="0" src="~/img/arrow/go-bottom.png">
+    </a><br /><label id="minutes">00</label>:<label id="seconds">00</label>
+    <button type="button" onclick="Check()"> Submit</button>
+
+</div>
+@section Script{
+    <script>
+
+        $("input[type=radio]").on("click", function () {
+            var name = $(this).attr('name');
+            var n = name.substr(name.length - 1);
+            var b = "#btn+" + n
+            console.log(b);
+
+            $("#btn-" + n).removeClass('btn-outline-info').addClass('btn-success');
+        })
+
+        function Check() {
+            if (confirm("bitirmek istediyine eminsenmi?")) {
+                var duz = 0;
+                var sef = 0;
+
+
+
+                for (var i = 0; i < $('form').length; i++) {
+                    var c = $('input[name="r' + i + '"]:checked').val();
+                    var cc = $("#Correct" + i).val();
+                    $("#cavab" + i).html("");
+                    var txt = $("<p></p>");
+                    if (c === cc) {
+                        txt.text("Duz").css("background-color", "yellow");
+                        duz++;
+                        $("#btn-" + i).removeClass('btn-outline-info btn-dange').addClass('btn-success');
+                    }
+                    else {
+                        txt.text("Sef. duz variant " + cc).css("background-color", "red");
+                        sef++;
+                        $("#btn-" + i).removeClass('btn-outline-info btn-success').addClass('btn-danger');
+                    }
+                    $("#cavab" + i).append(txt);
+                    $("#descr" + i).show()
+                }
+                alert("duz cavab=" + duz + "      sef cavab=" + sef)
+
+            } else {
+
+            }
+        }
+
+        var minutesLabel = document.getElementById("minutes");
+        var secondsLabel = document.getElementById("seconds");
+        var totalSeconds = 0;
+        setInterval(setTime, 1000);
+
+        function setTime() {
+            ++totalSeconds;
+            secondsLabel.innerHTML = pad(totalSeconds % 60);
+            minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+        }
+
+        function pad(val) {
+            var valString = val + "";
+            if (valString.length < 2) {
+                return "0" + valString;
+            } else {
+                return valString;
+            }
+        }
+    </script>
+}

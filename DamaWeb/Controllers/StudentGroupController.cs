@@ -113,9 +113,23 @@ namespace DamaWeb.Controllers
             return View("AddCategory", model);
         }
 
+        [HttpPost]
         public IActionResult UpdateCategoryGroup(UICategoryGroup model,List<int> oldCategories)
         {
-            var mm = model;
+            if (model != null&&model?.GroupId!=null)
+            {
+                var rep = new FollowRepository();
+                foreach (var item in model.SelectedCategoryIds)
+                {
+                    if (oldCategories.Contains(item)) continue;
+                    rep.Insert<CategoryGroup>(new CategoryGroup { GroupId = model.GroupId, CategoryId = item });
+                }
+                foreach (var item in oldCategories)
+                {
+                    if (model.SelectedCategoryIds.Contains(item)) continue;
+                    rep.DeleteCategoryGroup(item, model.GroupId) ;
+                }
+            }
             return RedirectToAction("All");
         }
 

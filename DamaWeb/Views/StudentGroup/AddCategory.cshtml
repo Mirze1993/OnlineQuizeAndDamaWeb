@@ -11,7 +11,7 @@
     <link href="~/Select2/select2-bootstrap4.min.css" rel="stylesheet" />
 }
 <div class="container-fluid">
-    <form asp-action="UpdateCategoryGroup" asp-controller="StudentGroup">
+    <form method="post" asp-action="UpdateCategoryGroup" asp-controller="StudentGroup">
         <input type="hidden" asp-for="GroupId" />
         <br />
         <input type="text" asp-for="GruopeName" />

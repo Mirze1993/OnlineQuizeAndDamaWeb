@@ -94,6 +94,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a asp-action="SelectLesson" asp-controller="Lesson" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                           My Lesson
+                        </p>
+                    </a>
+                </li>
 
                 @if (User.IsInRole("Admin"))
                 {

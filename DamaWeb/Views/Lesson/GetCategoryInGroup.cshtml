@@ -1,8 +1,9 @@
-﻿@model List<UICategory>
+﻿@model List<Category>
 @{
-    ViewData["Title"] = "All";
+    ViewData["Title"] = "GetCategoryInGroup";
     Layout = "~/Views/_Layout.cshtml";
 }
+
 @section CSS{
     <link href="~/dataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/dataTables/css/responsive.bootstrap4.min.css" rel="stylesheet" />
@@ -10,11 +11,7 @@
 }
 
 <div class="container-fluid">
-    <a asp-action="Add" asp-controller="Category" class="btn btn-danger">
-        <i class="fas fa-plus-circle">
-            Add
-        </i>
-    </a><br />
+    
     @if (Model != null)
     {
         <div class="card">
@@ -31,13 +28,9 @@
                 <table id="AllCategory" class="table table-striped table-valign-middle">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Create User</th>
-                            <th>Description</th>
-                            <th>Subject</th>
-                            <th>AllQuize</th>
-                            <th>AddQuize</th>
-                            <th>Edit</th>
+                            <th>Name</th>                            
+                            <th>Description</th>                            
+                            <th>Start</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,55 +39,24 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-
                                     <td>
                                         @item.Name
                                     </td>
                                     <td>
-                                        @item.UserName
-                                    </td>
-                                    <td>
                                         @item.Description
                                     </td>
+                                    
                                     <td>
-                                        @item.SubjectName
-                                    </td>
-                                    <td>
-                                        <form method="post" asp-action="AllByCategory" asp-controller="Quize">
+                                        <form method="post" asp-action="StartQuize" asp-controller="Lesson">
                                             <input type="hidden" value="@item.Id" name="categoryId" />
-                                            <button type="submit" class="btn btn-outline-primary">
-                                                <i class="fas fa-align-justify">
-                                                    Quizes
-                                                </i>
-                                            </button>
-                                        </form>
-                                        
-                                    </td>
-                                    <td>
-                                        <form method="post" asp-action="GoAdd" asp-controller="Quize">
-                                            <input type="hidden" name="categoryId" value="@item.Id" />
                                             <button type="submit" class="btn btn-success">
-                                                <i class="fas fa-plus-circle">
-                                                    Add Quize
+                                                <i class="fas fa-play-circle">
+                                                    Start
                                                 </i>
                                             </button>
                                         </form>
                                     </td>
-                                    <td>
-                                        <a class="btn btn-info btn-sm" asp-action="Update" asp-controller="Category" asp-route-id="@item.Id">
-                                            <i class="fas fa-pencil-alt">
-                                            </i>
-                                            Update
-                                        </a>
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id">
-                                            <i class="fas fa-trash">
-                                            </i>
-                                            Delete
-                                        </a>
-                                        }
-                                    </td>
+                                    
                                 </tr>
                             }
                         }
@@ -120,4 +82,3 @@
         });
     </script>
 }
-

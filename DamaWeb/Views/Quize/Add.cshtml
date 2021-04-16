@@ -10,7 +10,7 @@
         <label>Question:</label>@Model.Question<br />
         @if (Model.QuestionImgSrc != null)
         {
-            <img   asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
+            <img asp-append-version="true" class="img-thumbnail w-25 h-25" src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
         }
 
 
@@ -60,17 +60,24 @@
             </div>
             <br />
         }
+        <form method="post" asp-action="AllByCategory">
+            <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-arrow-circle-left">
+                    Back
+                </i>
+            </button>
+        </form>
 
-        <a asp-action="AllByCategory" asp-route-categoryId="@Model.CategoryId" class="btn btn-danger">
-            <i class="fas fa-arrow-circle-left">
-                Back
-            </i>
-        </a>
-        <a asp-action="Update" asp-route-Id="@Model.Id" class="btn btn-success">
-            <i class="fas fa-pen">
-                Edit
-            </i>
-        </a>
+        <form method="post" asp-action="GoUpdate">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-pen">
+                    Edit
+                </i>
+            </button>
+        </form>
+
     }
     else if (Model.Id > 0 && ViewBag.edit == "Update")
     {
@@ -85,14 +92,14 @@
             <input type="hidden" asp-for="CImgSrc" />
             <input type="hidden" asp-for="DImgSrc" />
             <input type="hidden" asp-for="EImgSrc" />
-            <input type="hidden" asp-for="VideoSrc" />            
+            <input type="hidden" asp-for="VideoSrc" />
 
 
             <label>Question</label><br />
             <textarea asp-for="Question"></textarea><br />
             @if (Model.QuestionImgSrc != null)
             {
-                <img  asp-append-version="true" class="img-thumbnail w-25 h-25" 
+                <img asp-append-version="true" class="img-thumbnail w-25 h-25"
                      src="~/Quize/Picture/@Model.QuestionImgSrc" alt=""><br />
             }
             <label>QuestionImg</label><input class="imgupload" type="file" accept="image/*" name="QuestionImg" /><br />
@@ -164,6 +171,14 @@
             </div>
             <button class="btn btn-dark" type="submit">Update</button>
         </form>
+        <form method="post" asp-action="AllByCategory">
+            <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-arrow-circle-left">
+                    Back
+                </i>
+            </button>
+        </form>
     }
     else
     {
@@ -171,7 +186,7 @@
         <form enctype="multipart/form-data" method="post" asp-action="add" asp-controller="Quize">
             <input type="hidden" asp-for="CategoryId" />
 
-            <label>Question</label><br />            
+            <label>Question</label><br />
             <textarea asp-for="Question"></textarea><br />
             <label>QuestionImg</label><input class="imgupload" type="file" accept="image/*" name="QuestionImg" /><br />
 
@@ -183,8 +198,8 @@
             <label>CImg</label><input class="imgupload" type="file" accept="image/*" name="CImg" /><br />
             <label>D) </label><textarea asp-for="D"></textarea><br />
             <label>DImg</label><input class="imgupload" type="file" accept="image/*" name="DImg" /><br />
-            <label>E) </label><textarea  asp-for="E"></textarea><br />
-            <label>EImg</label><input class="imgupload"  type="file" accept="image/*" name="EImg" /><br />
+            <label>E) </label><textarea asp-for="E"></textarea><br />
+            <label>EImg</label><input class="imgupload" type="file" accept="image/*" name="EImg" /><br />
             <label>Answer: </label><select asp-for="Answer">
                 <option>A</option>
                 <option>B</option>
@@ -200,23 +215,23 @@
     }
 </div>
 
-@section Script{ 
-<script>
-    $(".imgupload").on("change", function () {
+@section Script{
+    <script>
+        $(".imgupload").on("change", function () {
 
-        const size = (this.files[0].size / 1024 /1024).toFixed(2);
-        if (size > 4) {
-            alert("File must be the size of 4 MB");
-            $(this).val(null);
-        }
-    })
-    $("#Video").on("change", function () {
+            const size = (this.files[0].size / 1024 / 1024).toFixed(2);
+            if (size > 4) {
+                alert("File must be the size of 4 MB");
+                $(this).val(null);
+            }
+        })
+        $("#Video").on("change", function () {
 
-        const size = (this.files[0].size / 1024 / 1024).toFixed(2);
-        if (size > 50) {
-            alert("File must be the size of 50 MB");
-            $(this).val(null);
-        }
-    })
-</script>
+            const size = (this.files[0].size / 1024 / 1024).toFixed(2);
+            if (size > 50) {
+                alert("File must be the size of 50 MB");
+                $(this).val(null);
+            }
+        })
+    </script>
 }

@@ -79,5 +79,18 @@ namespace DamaWeb.Repostory
                     parameters: sqlparams).Item1;
             }
         }
+
+        public bool DeleteCategoryGroup(int categoryId, int groupId)
+        {
+            using (var commander = DBContext.CreateCommander())
+            {
+                var sqlparams = new List<System.Data.Common.DbParameter> {
+                     commander.SetParametr("CategoryId",categoryId),
+                     commander.SetParametr("GroupId",groupId),
+                };
+                return commander.NonQuery("DeleteCategoryGroup", commandType: System.Data.CommandType.StoredProcedure,
+                    parameters: sqlparams);
+            }
+        }
     }
 }

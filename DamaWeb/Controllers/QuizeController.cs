@@ -22,28 +22,32 @@ namespace DamaWeb.Controllers
             enviloment = _enviloment;
         }
 
-
+        [HttpPost]
         public IActionResult AllByCategory(int categoryId)
         {
             ViewBag.categoryId = categoryId;
-            return View(new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).Item1);
+            return View("AllByCategory", new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).Item1);
         }
 
         [Authorize(Roles = "Admin, Teacher")]
-        public IActionResult Add(int categoryId)
+        [HttpPost]
+        public IActionResult GoAdd(int categoryId)
         {
-            return View(new Quize { CategoryId = categoryId });
+            return View("Add",new Quize { CategoryId = categoryId });
         }
 
         [Authorize(Roles = "Admin, Teacher")]
+        [HttpPost]
         public IActionResult View(int id)
         {
             ViewBag.edit = "View";
             return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).Item1);
         }
 
+
         [Authorize(Roles = "Admin, Teacher")]
-        public IActionResult Update(int id)
+        [HttpPost]
+        public IActionResult GoUpdate(int id)
         {
             ViewBag.edit = "Update";
             return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).Item1);
@@ -329,7 +333,7 @@ namespace DamaWeb.Controllers
             }
 
             rep.Delet(id);
-            return RedirectToAction("AllByCategory", "Quize", new { categoryId = categoryId });
+            return AllByCategory(categoryId);
         }
     }
 }
