@@ -1,0 +1,256 @@
+﻿@model UIProfil
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/_Layout.cshtml";
+
+    var imgScr = "/dist/img/avatar5.png";
+    if (!string.IsNullOrEmpty(Model.ProfilPicture))
+    {
+        imgScr = "/img/profil/orginal/" + Model.ProfilPicture;
+    }
+
+    int id = Convert.ToInt32(User.Claims.FirstOrDefault(
+                    x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier)
+                .Value);
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Profile</h1>
+            </div>
+
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <!-- Profile Image -->
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-circle"
+                                 src="@imgScr"
+                                 alt="User profile picture">
+
+                        </div>
+
+                        @if (Model.Id == id)
+                        {
+                            <br />
+
+                            <input type="hidden" id="oldPic" value="@Model.ProfilPicture" />
+                            <div class="input-group">
+                                <input type="file" accept="image/*" asp-for="ProfilPicture" class="imgupload" id="InputFile">
+                                <button type="button" class="btn btn-outline-success " onclick="UploadFile('InputFile')">
+                                    <i class="fas fa-save">
+                                        Upload
+                                    </i>
+
+                                </button>
+                            </div>
+                            <br />
+
+
+
+                            <form asp-action="EditAppUser" asp-controller="Profil">
+                                <div class="form-group">
+                                    <input placeholder="FullName" class="form-control" asp-for="FullName" />
+                                </div>
+                                <div class="form-group">
+                                    <input disabled="disabled" placeholder="UserName" class="form-control" asp-for="UserName" />
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="Email" class="form-control" asp-for="Email" />
+                                </div>
+                                <div class="form-group">
+                                    <input placeholder="Phone" class="form-control" asp-for="Phone" />
+                                </div>
+                                <button class="btn btn-outline-success" type="submit">
+                                    <i class="fas fa-save">
+                                    </i>
+                                    Save
+                                </button>
+                            </form>
+                        }
+
+                        else
+                        {
+                            <h3 class="profile-username text-center">Name: @Model.FullName</h3>
+
+                            <p class="text-muted text-center">UserName: @Model.UserName</p>
+
+                            <p class="text-muted text-center">Email: @Model.Email</p>
+                            @if (!string.IsNullOrEmpty(Model.Phone))
+                            {
+                                <p class="text-muted text-center">Phone: @Model.Phone</p>
+                            }
+                        }
+                        <p class="text-muted text-center">@Model.Role</p>
+
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+            <div class="col-md-9">
+                <!-- About Me Box -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">About Me</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    @if (Model.Id == id)
+                    {
+                        <form asp-action="EditClaims" asp-controller="Profil">
+                            <div class="card-body">
+
+                                <strong><i class="fas fa-book mr-1"></i>BirhtDate</strong>
+
+                                <div class="form-group">
+                                    <input placeholder="UserName" type="date" class="form-control" asp-for="BirthDate" />
+                                </div>
+
+                                <hr>
+                                <strong><i class="fas fa-book mr-1"></i> Education</strong>
+
+                                <div class="form-group">
+                                    <input placeholder="UserName" class="form-control" asp-for="Education" />
+                                </div>
+
+                                <hr>
+
+                                <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+
+                                <div class="form-group">
+                                    <input placeholder="UserName" class="form-control" asp-for="Location" />
+                                </div>
+
+                                <hr>
+
+                                <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
+
+                                <div class="form-group">
+                                    <input placeholder="UserName" class="form-control" asp-for="Skills" />
+                                </div>
+
+                                <hr>
+
+                                <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+
+                                <div class="form-group">
+                                    <input placeholder="UserName" class="form-control" asp-for="Notes" />
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+
+                                <button class="btn btn-outline-primary" type="submit">
+                                    <i class="fas fa-save">
+                                    </i>
+                                    Save
+                                </button>
+
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="card-body">
+
+
+                            <strong><i class="fas fa-book mr-1"></i> Education</strong>
+
+                            <p class="text-muted">
+                                @Model.Education
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+
+                            <p class="text-muted">@Model.Location</p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
+
+                            <p class="text-muted">
+                                <span class="tag tag-danger">@Model.Skills</span>
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+
+                            <p class="text-muted">@Model.Skills</p>
+
+                        </div>
+
+                    }
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+@if (Model.Id == id)
+{
+    @section Script{
+
+        <script>
+            $(".imgupload").on("change", function () {
+
+                const size = (this.files[0].size / 1024 / 1024).toFixed(2);
+                if (size > 4) {
+                    alert("File must be the size of 4 MB");
+                    $(this).val(null);
+                }
+            })
+
+            function UploadFile(inputId) {
+                var input = document.getElementById(inputId);
+                var file = input.files[0];
+
+                if (file == null) {
+                    alert("File did not select")
+                    return;
+                }
+
+                var formData = new FormData();
+                formData.append("file", file);
+
+                var oldPic = $("#oldPic").val();
+                formData.append("oldPic", oldPic);
+
+
+                $.ajax({
+                    url: "/Profil/ImageUpload",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function () {
+                        alert("Files Uploaded!");
+                    }
+                });
+            }
+        </script>
+
+    }
+}

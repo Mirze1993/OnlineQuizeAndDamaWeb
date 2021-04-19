@@ -54,25 +54,40 @@
 
 
                             <td>
-                                <a asp-action="AddStudent" asp-controller="StudentGroup" class="btn btn-info" asp-route-groupId="@item.Id" asp-route-groupName="@item.Name" asp-route-teacherId="@item.CreaterId">
-                                    <i class="fas fa-users">
-                                        All Student
-                                    </i>
-                                </a>
+                                <form method="post" asp-action="AddStudent" asp-controller="StudentGroup">
+                                    <input type="hidden" name="groupId" value="@item.Id" />
+                                    <input type="hidden" name="groupName" value="@item.Name" />
+                                    <input type="hidden" name="teacherId" value="@item.CreaterId" />
+                                    <button type="submit" class="btn btn-outline-info">
+                                        <i class="fas fa-users">
+                                            All Student
+                                        </i>
+                                    </button>
+                                </form>
                             </td>
                             <td>
-                                <a asp-action="AddCategory" asp-controller="StudentGroup" class="btn btn-info" asp-route-groupId="@item.Id" asp-route-groupName="@item.Name" asp-route-teacherId="@item.CreaterId">
+
+                                <form method="post" asp-action="AddCategory" asp-controller="StudentGroup">
+                                <input type="hidden" name="groupId" value="@item.Id" />
+                                <input type="hidden" name="groupName" value="@item.Name" />
+                                <input type="hidden" name="teacherId" value="@item.CreaterId" />
+                                <button type="submit" class="btn btn-outline-primary">
                                     <i class="fas fa-users">
                                         All Category
                                     </i>
-                                </a>
+                                </button>
+                                </form>
                             </td>
                             <td>
-                                <a class="btn btn-info btn-sm" asp-action="Update" asp-controller="StudentGroup" asp-route-id="@item.Id">
-                                    <i class="fas fa-pencil-alt">
-                                    </i>
-                                    Update
-                                </a>
+
+                                <form method="post" asp-action="Updatepage" asp-controller="StudentGroup">
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="fas fa-pencil-alt">
+                                        </i>
+                                        Update
+                                    </button>
+                                </form>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <a class="btn btn-danger btn-sm" asp-action="Delete" asp-controller="StudentGroup" asp-route-id="@item.Id">

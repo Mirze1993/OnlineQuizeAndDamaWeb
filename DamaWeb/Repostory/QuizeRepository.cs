@@ -48,7 +48,7 @@ namespace DamaWeb.Repostory
             }
         }
 
-        [HttpPost]
+       
         public List<Category> SelectCategoryInGroup(int groupeId)
         {
             using (var comander = DBContext.CreateCommander())
@@ -57,6 +57,19 @@ namespace DamaWeb.Repostory
                     commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                     comander.SetParametr("groupeId",groupeId)
+                    }).Item1;
+            }
+        }
+
+        public List<UIResultQuize> GetResults(int studentId,int teacherId)
+        {
+            using (var comander = DBContext.CreateCommander())
+            {
+                return comander.Reader<UIResultQuize>("GetResults",
+                    commandType: System.Data.CommandType.StoredProcedure
+                    , parameters: new List<System.Data.Common.DbParameter> {
+                    comander.SetParametr("studentId",studentId),
+                    comander.SetParametr("teacherId",teacherId),
                     }).Item1;
             }
         }

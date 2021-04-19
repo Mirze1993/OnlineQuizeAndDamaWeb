@@ -30,11 +30,16 @@ namespace DamaWeb.Controllers
 
         public IActionResult RequestGame(int id)
         {
-            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id").Item1;
+            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id", "ProfilPicture").Item1;
             return PartialView("RequestGame",u);
         }
 
-
+        [HttpPost]
+        public IActionResult Search(string name)
+        {
+            var u = repository.GetWithCondition($"Name Like '%"+ name+"%'", "Name", "Email", "Id","ProfilPicture").Item1;
+            return View("UsersIndex", u);
+        }
     }
 
 

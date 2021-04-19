@@ -143,7 +143,7 @@
             method: "post",
             success:
                 function () {
-                    var rm = right(name, sendmsg, dateFormat(new Date($.now()), "mmm dd HH:mm:ss"));
+                    var rm = right(cueUserName, sendmsg, dateFormat(new Date($.now()), "mmm dd HH:mm:ss"));
                     $("#writemessage").val('');
                     chatbox.append(rm);
                     chatbox.animate({ scrollTop: chatbox.prop("scrollHeight") }, 1000);

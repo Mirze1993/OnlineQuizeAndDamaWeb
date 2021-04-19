@@ -45,7 +45,8 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="~/dist/img/avatar5.png" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                            
+                            <img id="smImg" src="~/dist/img/avatar5.png" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <p class="dropdown-item">
                                     @User.Identity.Name
@@ -54,7 +55,7 @@
                         </div>
                         <!-- Message End -->
                     </a>
-                    <a asp-action="Profile" asp-controller="UserInfo" class="dropdown-item">
+                    <a asp-action="ViewProfil" asp-controller="Profil" class="dropdown-item">
                         <i class="far fa-sign-out-alt"></i>
                         <p>Profil</p>
                     </a>
@@ -149,16 +150,6 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a asp-action="UsersIndex" asp-controller="Users" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Contacts
-                        </p>
-                    </a>
-                </li>
-
-
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

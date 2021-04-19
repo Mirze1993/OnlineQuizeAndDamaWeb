@@ -29,7 +29,7 @@
             <div>
                 <a asp-action="MainRoom" asp-controller="GameRoom" class="btn "><i class="fa fa-home"></i></a>
                 <button onclick="ChangeThema()" class="btn"><i class="fa fa-refresh"></i></button>
-                <button asp-action="Lose" asp-route-id="@ViewBag.GameId" asp-controller="GameRoom" class="btn"><i class="fa fa-flag"></i></button>
+                <button asp-action="Lose" asp-route-GameId="@ViewBag.GameId" asp-controller="Game" class="btn"><i class="fa fa-flag"></i></button>
                 <button class="btn"><i class="fa fa-comment"></i></button>
                 <button class="btn"><i class="fa fa-handshake"></i></button>
             </div>

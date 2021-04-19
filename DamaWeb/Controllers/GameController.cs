@@ -141,6 +141,25 @@ namespace DamaWeb.Controllers
             return JsonConvert.SerializeObject(pg);
         }
 
+        public IActionResult Lose(int gameId)
+        {
+            var gamesRepostory = new GamesRepository();
+            var g = gamesRepostory.GetByColumNameFist("Id", gameId).Item1;
+            g.Status = GameStatus.Close;
+            if(getId() != g.AcceptUser) g.WinUser = g.AcceptUser;
+            else g.WinUser = g.RequestUser;
+            var b = gamesRepostory.Update(g, g.Id);
+          
+            return RedirectToAction("MainRoom", "GameRoom");
+        }
+
+        int getId()
+        {
+            return Convert.ToInt32(User.Claims.FirstOrDefault(
+                    x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier)
+                .Value);
+        }
+
     }
 
 }

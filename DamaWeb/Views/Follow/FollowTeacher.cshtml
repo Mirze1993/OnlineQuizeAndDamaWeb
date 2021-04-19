@@ -1,5 +1,13 @@
 ﻿@model AppUser
 @{
+    var imgScr = "/dist/img/avatar5.png";
+    if (!string.IsNullOrEmpty(Model?.ProfilPicture))
+    {
+        imgScr = "/img/profil/orginal/" + Model.ProfilPicture;
+    }
+}
+@section CSS{
+    <link href="~/bootstrap/css/toastr.min.css" rel="stylesheet" />
 }
 <div class="modal fade">
     <div class="modal-dialog">
@@ -7,9 +15,7 @@
             <div class="modal-header">
                 @if (Model != null)
                 {
-
-
-                    <h5>Istek gondermezden evvel zehmet olmasa muellim ile elaqe saxlayardiniz</h5>
+                    <h5>Follow</h5>
                 }
                 else
                 { <h5>error</h5>}
@@ -18,17 +24,47 @@
                 </button>
             </div>
             <div class="modal-body">
-
                 @if (Model != null)
                 {
+                    <div class="card bg-light">
+                        <div class="card-header text-muted border-bottom-0">
+                            Teacher
+                        </div>
+                        <input type="hidden" id="reciveId" asp-for="Id" />
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="lead"><b> @Model.Name</b></h2>
+                                    <p class="text-muted text-sm">Istek gondermezden evvel zehmet olmasa muellim ile elaqe saxlayardiniz</p>
+                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                        <li class="small"><span class="fa-li"><i class="fas fa-envelope"></i></span> Email: @Model.Email </li>
+                                        <li class="small"><span class="fa-li"><i class="fas  fa-phone"></i></span> Phone : @Model.Phone</li>
+                                    </ul>
+                                </div>
+                                <div class="col-5 text-center">
+                                    <img src="@imgScr" alt="" class="img-circle img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <input class="" type="text" id="chatmsg" />
+                                    <a onclick="SendMsg()" href="#" class="btn btn-sm bg-teal">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </a>
+                                </div>
+                                <div class="col-sm-2 right">
+                                    @if (Model != null)
+                                    {
+                                        <button type="button" class="btn btn-success" data-send="modal" data-value="@Model.Id">Follow</button>
+                                    }
+                                </div>
+                            </div>
 
-                    <p>
-                        Elaqe saxlamaq ucun elaqe vaistelerinden:<br />
-                        Name: @Model.Name <br />
-                        Email: @Model.Email <br />
-                        Phone: @Model.Phone <br />
-                        ve ya sayitda yaradilan chatdan istifde ede bilersiniz
-                    </p>
+                        </div>
+
+                    </div>
                 }
                 else
                 {
@@ -36,13 +72,38 @@
                 }
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                @if (Model != null)
-                {
-                    <button type="button" class="btn btn-success" data-send="modal" data-value="@Model.Id">Follow</button>
-                }
-            </div>
         </div>
     </div>
 </div>
+@section Script{
+    <script src="~/bootstrap/alertjs/toastr.min.js"></script>
+    <script>
+        function SendMsg() {
+            console.log("AWdwdaDWAD");
+            msg = $("#chatmsg").val();
+            reciveid = $("#reciveId").val();
+            $("#chatmsg").val("");
+            $.ajax({
+                url: "/Chat/SendMesage",
+                data: {
+                    recveid: reciveid,
+                    message: msg
+                },
+                method: "post",
+                success: function () {
+                    toastr.options = {
+                        "closeButton": true,
+                        "showDuration": "100",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "show",
+                        "hideMethod": "hide"
+                    };
+                    toastr.success(msg + " mesaji ugurla gonderildi");
+                },
+            });
+    </script>
+}

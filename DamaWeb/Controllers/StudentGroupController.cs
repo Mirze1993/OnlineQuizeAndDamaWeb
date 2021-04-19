@@ -50,8 +50,8 @@ namespace DamaWeb.Controllers
             return View();
         }
 
-
-        public IActionResult Update(int id)
+        [HttpPost]
+        public IActionResult Updatepage(int id)
         {
             var model = new FollowRepository().GetByColumNameFist<StudentGroup>("Id", id).Item1;
             ViewBag.message = "Edit";
@@ -67,6 +67,7 @@ namespace DamaWeb.Controllers
         }
 
         // GetStudentsByTecherId
+        [HttpPost]
         public IActionResult AddStudent(int groupId, string groupName,int teacherId)
         {
             ViewBag.groupId = groupId;
@@ -92,7 +93,7 @@ namespace DamaWeb.Controllers
             return AddStudent(groupId, groupName, teacherId);
         }
 
-
+        [HttpPost]
         public IActionResult AddCategory(int groupId, string groupName, int teacherId)
         {
             
@@ -133,5 +134,10 @@ namespace DamaWeb.Controllers
             return RedirectToAction("All");
         }
 
+
+        public IActionResult Results(int studentId,int teacherId)
+        {          
+            return View(new QuizeRepository().GetResults(studentId, teacherId));
+        }
     }
 }

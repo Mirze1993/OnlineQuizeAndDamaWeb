@@ -42,7 +42,7 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public IActionResult FollowTeacher(int teacherId)
         {
-            var teacher = new QuizeRepository().GetByColumNameFist<AppUser>("Id", teacherId, "Name","Id","Phone","Email").Item1;
+            var teacher = new QuizeRepository().GetByColumNameFist<AppUser>("Id", teacherId, "Name","Id","Phone","Email","ProfilPicture").Item1;
             return PartialView("FollowTeacher",teacher);
         }
 

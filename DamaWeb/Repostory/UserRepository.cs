@@ -38,5 +38,20 @@ namespace DamaWeb.Repostory
                     }).Item1;
             }
         }
+
+        public bool UpdateOrCreateClaim(int userId,string type,string value)
+        {
+            using (var comannder = DBContext.CreateCommander())
+            {
+                return comannder.NonQuery(
+                    commandText: "UpdateOrCreateClaim"
+                    , commandType: System.Data.CommandType.StoredProcedure
+                    , parameters: new List<System.Data.Common.DbParameter> {
+                       comannder.SetParametr("UserId", userId),
+                       comannder.SetParametr("Type", type),
+                       comannder.SetParametr("Value", value)
+                    });
+            }
+        }
     }
 }

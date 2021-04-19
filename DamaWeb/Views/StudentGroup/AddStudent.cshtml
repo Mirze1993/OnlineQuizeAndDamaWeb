@@ -39,6 +39,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Results</th>
                         <th>Groupe name</th>
                         <th>Remove</th>
                     </tr>
@@ -48,22 +49,33 @@
                     {
                         @foreach (var item in curGrou)
                         {
-                            <tr id="@item.Id">
-                                <td>
-                                    @item.StudentName
-                                </td>
-                                <td>
-                                    @item.GroupName
-                                </td>
+                    <tr id="@item.Id">
+                        <td>
+                            @item.StudentName
+                        </td>
+                        <td>
+                            <form method="post" asp-action="Results" asp-controller="StudentGroup">
+                                <input type="hidden" name="studentId" value="@item.StudentId" />
+                                <input type="hidden" name="teacherId" value="@item.TeacherId" />
+                                <button type="submit" class="btn btn-info">
+                                    <i class="fas fa-pencil-alt">
+                                        Results
+                                    </i>                                   
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            @item.GroupName
+                        </td>
 
-                                <td>
-                                    <a asp-action="RemoveUserFromGroup" asp-controller="StudentGroup"
-                                       asp-route-id="@item.Id" asp-route-groupId="@grId"
-                                       asp-route-groupName="@grName" asp-route-teacherId="@item.TeacherId">
-                                        Remove from group
-                                    </a>
-                                </td>
-                            </tr>
+                        <td>
+                            <a asp-action="RemoveUserFromGroup" asp-controller="StudentGroup"
+                               asp-route-id="@item.Id" asp-route-groupId="@grId"
+                               asp-route-groupName="@grName" asp-route-teacherId="@item.TeacherId">
+                                Remove from group
+                            </a>
+                        </td>
+                    </tr>
                         }
                     }
                 </tbody>

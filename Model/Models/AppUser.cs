@@ -17,5 +17,6 @@ namespace Model.Models
         public string Phone { get; set; }
 
         public string Email { get; set; }
+        public string ProfilPicture { get; set; }
     }
 }

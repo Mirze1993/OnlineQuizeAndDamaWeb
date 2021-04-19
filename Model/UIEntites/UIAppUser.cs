@@ -11,6 +11,7 @@ namespace Model.UIEntites
 
         [Required]
         [StringLength(50)]
+        [Display(Name ="Full Name")]
         public string Name { get; set; }
         [Required]
         [StringLength(50)]

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,27 +66,58 @@ namespace TestConsole
             //reset.Reset();
             //----------------------------------------------
 
-            AutoResetEvent res = new AutoResetEvent(false);
-            StatusChecker st = new StatusChecker(3);
-            Console.WriteLine("timerden evvel");
-            var timer = new Timer(st.CheckStatus, res, 1000, 1000);
+            //AutoResetEvent res = new AutoResetEvent(false);
+            //StatusChecker st = new StatusChecker(3);
+            //Console.WriteLine("timerden evvel");
+            //var timer = new Timer(st.CheckStatus, res, 1000, 1000);
 
-            Console.WriteLine("timerden sonra");
-            res.WaitOne();
-            Console.WriteLine("waitden sonra");
-            timer.Change(0, 500);
-            res.WaitOne();
-            Console.WriteLine("is bitdi");
-            Console.ReadLine();
+            //Console.WriteLine("timerden sonra");
+            //res.WaitOne();
+            //Console.WriteLine("waitden sonra");
+            //timer.Change(0, 500);
+            //res.WaitOne();
+            //Console.WriteLine("is bitdi");
+            //Console.ReadLine();
             //var reset = new AutoResetEvent(false);
 
             //var timer = new Timer(Timer_Elapsed,reset,2000,2000);
             //Console.ReadLine();
+
+            dynamic TestDinamic = new StatusChecker.TestDinamic1();
+
+            //try { TestDinamic.C = 3; } catch { }
+            //try { TestDinamic.A = 4; } catch { }
+
+            //StatusChecker.TestDinamic1 d1 = TestDinamic;
+
+            Stopwatch st = new Stopwatch();
+           
+            dynamic A = 3;
+            dynamic B = 4;
+
+            for (int i = 0; i < 100; i++)
+            {                
+                st.Start();
+                var t = new { A, B };
+
+                var r = JsonConvert.SerializeObject(t);
+
+                StatusChecker.TestDinamic1 d1 = JsonConvert.DeserializeObject<StatusChecker.TestDinamic1>(r);
+                Console.WriteLine(st.ElapsedMilliseconds);
+
+                st.Reset();
+            }
+           
+            
+           
+
+            
+
+            Console.ReadLine();
+
         }
 
-
-
-
+       
 
         static AutoResetEvent reset = new AutoResetEvent(false);
         static void BekleyenThred()
@@ -168,6 +201,13 @@ namespace TestConsole
                 invokeCount = 0;
                 autoEvent.Set();
             }
+        }
+
+
+        public class TestDinamic1
+        {
+            public int A { get; set; }
+            public int B { get; set; }
         }
     }
 }

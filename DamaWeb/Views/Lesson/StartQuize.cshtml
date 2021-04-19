@@ -90,7 +90,7 @@
                     <div id="cavab@(i)"></div>
 
                     <div id="descr@(i)" style="display:none">
-                        <input id="Correct@(i)" type="hidden" asp-for="@Model[i].Answer" />                       
+                        <input id="Correct@(i)" type="hidden" asp-for="@Model[i].Answer" />
                         <label>AnswerDecrpt </label>@Model[i].AnswerDecrpt<br />
                         @if (Model[i].PictureSrc != null)
                         {<p>Dscription Image</p>
@@ -129,9 +129,11 @@
     <a href="javascript:window.scrollTo(document.body.clientWidth,document.body.clientHeight)" title="Bottom">
         <img alt="Bottom" border="0" src="~/img/arrow/go-bottom.png">
     </a><br /><label id="minutes">00</label>:<label id="seconds">00</label>
-    <button type="button" onclick="Check()"> Submit</button>
+    <button  type="button" onclick="Check(); $(this).hide()"> Submit</button>
 
 </div>
+
+<input type="hidden" id="catId" value="@ViewBag.categoryId" /> 
 @section Script{
     <script>
 
@@ -148,28 +150,57 @@
             if (confirm("bitirmek istediyine eminsenmi?")) {
                 var duz = 0;
                 var sef = 0;
-
-
+                var cavabsiz = 0;
+                var sefler = "";
 
                 for (var i = 0; i < $('form').length; i++) {
                     var c = $('input[name="r' + i + '"]:checked').val();
                     var cc = $("#Correct" + i).val();
                     $("#cavab" + i).html("");
                     var txt = $("<p></p>");
-                    if (c === cc) {
-                        txt.text("Duz").css("background-color", "yellow");
-                        duz++;
-                        $("#btn-" + i).removeClass('btn-outline-info btn-dange').addClass('btn-success');
-                    }
-                    else {
-                        txt.text("Sef. duz variant " + cc).css("background-color", "red");
-                        sef++;
-                        $("#btn-" + i).removeClass('btn-outline-info btn-success').addClass('btn-danger');
-                    }
+                    if (c == null) {
+                        sefler += "*"+(i + 1) +")-" + cc + "*";
+                        txt.text("Cavablandirilmayib").css("background-color", "yellow");
+                        cavabsiz++;
+                        $("#btn-" + i).removeClass('btn-outline-info btn-dange').addClass('btn-danger');
+                    } else
+                        if (c === cc) {
+                            txt.text("Duz").css("background-color", "green");
+                            duz++;
+                            $("#btn-" + i).removeClass('btn-outline-info btn-dange').addClass('btn-success');
+                        }
+                        else {
+                            sefler += "*"+(i + 1)+")"+c + "-" + cc+"*";
+                            txt.text("Sef. duz variant " + cc).css("background-color", "red");
+                            sef++;
+                            $("#btn-" + i).removeClass('btn-outline-info btn-success').addClass('btn-danger');
+                        }
                     $("#cavab" + i).append(txt);
                     $("#descr" + i).show()
                 }
-                alert("duz cavab=" + duz + "      sef cavab=" + sef)
+
+                clearInterval(timer);
+
+                var formData = new FormData();
+                formData.append("CategoryId", $("#catId").val());
+                formData.append("TotalTrueAnswer", duz);
+                formData.append("TotalFalseAnswer", sef);
+                formData.append("TotalNoAnswer", cavabsiz);
+                formData.append("FalseAnswers", sefler);
+                formData.append("TotalSecond", totalSeconds);
+                
+                $.ajax({
+                    type: "Post",
+                    url: "/Lesson/Result",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (b) {
+                        
+                    }
+                });
+
+                alert("duz cavab=" + duz + "      sef cavab=" + sef + "      cavabsiz=" + cavabsiz)
 
             } else {
 
@@ -179,7 +210,7 @@
         var minutesLabel = document.getElementById("minutes");
         var secondsLabel = document.getElementById("seconds");
         var totalSeconds = 0;
-        setInterval(setTime, 1000);
+        var timer=setInterval(setTime, 1000);
 
         function setTime() {
             ++totalSeconds;

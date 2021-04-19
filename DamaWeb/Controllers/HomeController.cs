@@ -93,6 +93,10 @@ namespace DamaWeb.Controllers
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
+                    var pic = u.ProfilPicture;
+                    Response.Cookies.Delete("img");
+                    if (!string.IsNullOrEmpty(pic))
+                        Response.Cookies.Append("img", pic);
 
                     var principial = new ClaimsPrincipal(identity);
                     await HttpContext.SignInAsync(principial, properties);

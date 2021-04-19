@@ -1,6 +1,7 @@
 ﻿@model List<Model.Models.AppUser>
 
 @{
+    
     ViewData["Title"] = "UsersIndex";
     Layout = "~/Views/_Layout.cshtml";
     var onlineUsers = DamaWeb.Tools.OnlineUsers.Users;
@@ -14,145 +15,104 @@
 }
 
 <div id="placeholder"></div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="card card-primary">
-                <div class="card-header">
-                    Online Users
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table id="OnlineUsers" class="table table-striped table-valign-middle">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Request Game</th>
-                                <th>Direct Chat</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (onlineUsers != null)
-                            {
-                                @foreach (var item in onlineUsers)
-                                {
-                                    if (item.Id == userid) continue;
-                                    <tr>
-                                        <td>
-                                            @item.Name
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" data-toggle="ajax-game-request" data-url="/Users/RequestGame/@item.Id">
-                                                Game Request
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button type="button" onclick="addChat(@item.Id)" class="btn btn-danger" data-toggle="modal" data-target="#modal-danger">
-                                                Mesage
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
+
+
+<section class="content">
+    <form class="form-inline ml-3" asp-action="Search" asp-controller="Users">
+        <div class="input-group input-group-sm">
+            <input name="name" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-outline-info" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="card card-primary">
-                <div class="card-header">
-                    Random Users
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table id="AllUsers" class="table table-striped table-valign-middle">
-                        <thead>
-                            <tr>
-                                <th>Online</th>
-                                <th>Name</th>
-                                <th>Request Game</th>
-                                <th>Direct Chat</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model?.Count > 0)
-                            {
-                                @foreach (var item in Model)
-                                {
-                                    if (item.Id == userid) continue;
-                                    <tr>
-                                        <td>
-                                            @if (onlineUsers != null)
-                                            {
-                                                @if (onlineUsers.Any(x => x.Id == item.Id))
+    </form>
+    <!-- Default box -->
+    <div class="card card-solid">
+        <div class="card-body pb-0">
+            <div class="row d-flex align-items-stretch">
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        if (item.Id == userid) continue;
+                        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+                            <div class="card bg-light">
+                                <div class="card-header text-muted border-bottom-0">
+                                    @item.UserName
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <h2 class="lead"><b>@item.Name</b></h2>
+                                            <p class="text-muted text-sm">@item.Email</p>
+                                                @if (onlineUsers!.Any(x => x.Id == item.Id))
                                                 {
+                                                <p class="text-muted text-sm">
+                                                    <span class="badge badge-success">0</span> online
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted text-sm">
+                                                    <span class="badge badge-danger">x</span>ofline
+                                                </p>
+                                            }
 
 
-                                                    <span class="badge badge-success">0</span>
+                                            </div>
+                                            <div class="col-5 text-center">
+                                                @if (item.ProfilPicture != null)
+                                                {
+                                                    <img src="/img/profil/orginal/@item.ProfilPicture" alt="" class="img-circle img-fluid">
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge badge-danger">c</span>
+                                                    <img class="img-circle img-fluid" src="~/dist/img/avatar5.png" />
                                                 }
-                                            }
-                                        </td>
-                                        <td>
-                                            @item.Name
-                                        </td>
-                                        <td>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="text-right">
                                             <button type="button" class="btn btn-primary" data-toggle="ajax-game-request" data-url="/Users/RequestGame/@item.Id">
                                                 Request
                                             </button>
-                                        </td>
-                                        <td>
-                                            
                                             <button type="button" onclick="addChat(@item.Id)" class="btn btn-danger" data-toggle="modal" data-target="#modal-danger">
                                                 Mesage
                                             </button>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+            </div>
+        </div>
+        <div class="modal fade" id="modal-danger">
+            <div class="modal-dialog">
+                <div class="modal-content bg-danger">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="chatmsg" />
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="SendMsg()" class="btn btn-outline-light" data-dismiss="modal">Send</button>
+                    </div>
                 </div>
+                <!-- /.modal-content -->
             </div>
+            <!-- /.modal-dialog -->
         </div>
     </div>
-</div>
-<div class="modal fade" id="modal-danger">
-    <div class="modal-dialog">
-        <div class="modal-content bg-danger">
-            <div class="modal-header">
-                <h4 class="modal-title">Message</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input id="chatmsg" />
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
-                <button type="button" onclick="SendMsg()" class="btn btn-outline-light" data-dismiss="modal">Send</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
+</section>
 @section Script{
     <script src="~/dataTables/jquery/jquery.dataTables.min.js"></script>
     <script src="~/dataTables/jquery/dataTables.bootstrap4.min.js"></script>
@@ -176,8 +136,8 @@
         var reciveid
         function addChat(senderid) {
             reciveid = senderid
-           
-            
+
+
         }
         function SendMsg() {
             msg = $("#chatmsg").val();
@@ -192,8 +152,6 @@
                 success: function () {
                     toastr.options = {
                         "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": false,
                         "progressBar": true,
                         "preventDuplicates": true,
                         "onclick": null,

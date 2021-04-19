@@ -114,5 +114,34 @@
             });
         }
 
+        function SendMsg() {
+            console.log("AWdwdaDWAD");
+            msg = $("#chatmsg").val();
+            reciveid = $("#reciveId").val();
+            $("#chatmsg").val("");
+            $.ajax({
+                url: "/Chat/SendMesage",
+                data: {
+                    recveid: reciveid,
+                    message: msg
+                },
+                method: "post",
+                success: function () {
+                    toastr.options = {
+                        "closeButton": true,
+                        "showDuration": "100",
+                        "hideDuration": "1000",
+                        "timeOut": "2000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "show",
+                        "hideMethod": "hide"
+                    };
+                    toastr.success(msg + " mesaji ugurla gonderildi");
+                },
+            });
+        }
+
     </script>
 }

@@ -43,6 +43,7 @@
     <script src="~/customerJS/Notif.js"></script>
     @RenderSection("Script", required: false)
 
+    <script src="~/jquery/jquery.cookie.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -50,6 +51,12 @@
             if (checkboxValue != null) {
                 $("#online").prop('checked', checkboxValue)
             }
+            var img = $.cookie('img');
+            console.log(img + "fdsfs");
+            if (img != null) {
+                $("#smImg").attr("src", "/img/profil/40x40/" + img)
+            }
+
 
             $.ajax({
                 url: "/Home/getNotifAndChatCount",
@@ -112,9 +119,9 @@
                 var c = $("#badgeChat").text();
                 $("#badgeChat").text(parseInt(c) + 1);
                 $("#SumNoRead").text(parseInt(c) + 1);
-                
+
                 var mm = parseInt($("#" + name).text());
-                if (isNaN(mm)) { mm = 0;}
+                if (isNaN(mm)) { mm = 0; }
                 $("#" + name).text(mm + 1);
             } else {
                 $.ajax({
@@ -129,13 +136,13 @@
                             var msgg = addMsg(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:mm:ss"));
                             $("#chatbox").append(msgg);
                         });
-                       $("#chatbox").animate({ scrollTop: $("#chatbox").prop("scrollHeight") }, 500);
+                        $("#chatbox").animate({ scrollTop: $("#chatbox").prop("scrollHeight") }, 500);
                     }
                 });
             }
-            
+
         })
-       
+
     </script>
 </body>
 </html>
