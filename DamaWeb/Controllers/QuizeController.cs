@@ -318,12 +318,56 @@ namespace DamaWeb.Controllers
         {
             var rep = new QuizeRepository();
             var q = rep.GetByColumNameFist("Id", id, "VideoSrc", "PictureSrc").Item1;
+
+            if (q.QuestionImgSrc != null)
+            {
+                var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.QuestionImgSrc);
+                if (System.IO.File.Exists(pt))
+                    System.IO.File.Delete(pt);
+            }
+            if (q.AImgSrc != null)
+            {
+                var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.AImgSrc);
+                if (System.IO.File.Exists(pt))
+                    System.IO.File.Delete(pt);
+            }
+            if (q.BImgSrc != null)
+            {
+                var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.BImgSrc);
+                if (System.IO.File.Exists(pt))
+                    System.IO.File.Delete(pt);
+            }
+            if (q.CImgSrc != null)
+            {
+                var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.CImgSrc);
+                if (System.IO.File.Exists(pt))
+                    System.IO.File.Delete(pt);
+            }
+
+
+
+            if (q.DImgSrc != null)
+            {
+                var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.DImgSrc);
+                if (System.IO.File.Exists(pt))
+                    System.IO.File.Delete(pt);
+            }
+
+            if (q.EImgSrc != null)
+            {
+                var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.EImgSrc);
+                if (System.IO.File.Exists(pt))
+                    System.IO.File.Delete(pt);
+            }
+
             if (q.PictureSrc != null)
             {
                 var pt = Path.Combine(enviloment.WebRootPath, "Quize", "Picture", q.PictureSrc);
                 if (System.IO.File.Exists(pt))
                     System.IO.File.Delete(pt);
             }
+
+
 
             if (q.VideoSrc != null)
             {

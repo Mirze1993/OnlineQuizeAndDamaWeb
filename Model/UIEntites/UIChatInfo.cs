@@ -10,6 +10,7 @@ namespace Model.UIEntites
         public int Count { get; set; }
         public int NoReadCount { get; set; }
         public string SenderName { get; set; }
+        public string PictureSrc { get; set; }
         public DateTime LastDate { get; set; }
     }
 }

@@ -23,6 +23,11 @@
     <script src="~/bootstrap/alertjs/toastr.min.js"></script>
     <script>
 
+        $(document).ready(function () {
+            $('#slSubject').trigger("change")
+        })
+
+
         var placeholder = $('#placeholder');
 
         $('button[data-toggle="Follow-Teacher"]').click(function (event) {
@@ -114,8 +119,7 @@
             });
         }
 
-        function SendMsg() {
-            console.log("AWdwdaDWAD");
+        function SendMsg() {            
             msg = $("#chatmsg").val();
             reciveid = $("#reciveId").val();
             $("#chatmsg").val("");

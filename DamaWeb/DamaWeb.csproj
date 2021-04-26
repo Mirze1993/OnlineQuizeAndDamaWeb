@@ -27,8 +27,8 @@
     <Folder Include="wwwroot\img\profil\40x40\" />
     <Folder Include="wwwroot\img\profil\orginal\" />
     <Folder Include="wwwroot\Log\" />
-    <Folder Include="wwwroot\Quize\Video\" />
     <Folder Include="wwwroot\Quize\Picture\" />
+    <Folder Include="wwwroot\Quize\Video\" />
   </ItemGroup>
 
 

@@ -1,4 +1,4 @@
-﻿function left(name, msg, time) {
+﻿function left(name, msg, time,img) {
     var maindiv = $("<div></div>");
     maindiv.addClass('direct-chat-msg');
 
@@ -12,11 +12,15 @@
     var timee = $("<span></span>");
     timee.addClass('direct-chat-timestamp float-right');
     timee.text(time);
+    var imgg = $('<img />')
+    if (img == null || img == "" || img == undefined) {
+        imgg.attr("src", '/dist/img/avatar5.png')
+    }
+    else {
+        imgg.attr("src", '/img/profil/40x40/' + img)
+    }
 
-    var img = $('<img />', {
-        src: '/dist/img/avatar5.png'
-    });
-    img.addClass("direct-chat-img");
+    imgg.addClass("direct-chat-img");
 
     var txt = $("<div></div>");
     txt.addClass('direct-chat-text');
@@ -25,11 +29,11 @@
     infodiv.append(spanname);
     infodiv.append(timee);
     maindiv.append(infodiv);
-    maindiv.append(img);
+    maindiv.append(imgg);
     maindiv.append(txt);
     return maindiv;;
 }
-function right(name, msg, time) {
+function right(name, msg, time,img) {
     var maindiv = $("<div></div>");
     maindiv.addClass('direct-chat-msg right');
 
@@ -51,13 +55,17 @@ function right(name, msg, time) {
     txt.addClass('direct-chat-text');
     txt.text(msg);
 
-    var img = $('<img />', {
-        src: '/dist/img/avatar5.png'
-    });
-    img.addClass("direct-chat-img");
+    var imgg = $('<img />')
+    if (img == null || img == "" || img == undefined) {
+        imgg.attr("src", '/dist/img/avatar5.png')
+    }
+    else {
+        imgg.attr("src", '/img/profil/40x40/' + img)
+    }
+    imgg.addClass("direct-chat-img");
 
     maindiv.append(infodiv);
-    maindiv.append(img);
+    maindiv.append(imgg);
     maindiv.append(txt);
     return maindiv;
 }

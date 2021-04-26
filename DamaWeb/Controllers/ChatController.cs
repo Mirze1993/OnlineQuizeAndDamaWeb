@@ -25,7 +25,7 @@ namespace DamaWeb.Controllers
         {
             var userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
             var rep = new ChatRepository();
-            var msg=rep.getLastTop(50, userid, id);
+            var msg=rep.getLastTop(30, userid, id);
             msg.Reverse();
             return new JsonResult(msg);
         }

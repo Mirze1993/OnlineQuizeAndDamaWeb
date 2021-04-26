@@ -82,6 +82,9 @@
                                             <button type="button" onclick="addChat(@item.Id)" class="btn btn-danger" data-toggle="modal" data-target="#modal-danger">
                                                 Mesage
                                             </button>
+                                            @if (User.IsInRole("Admin")) { 
+                                            <a asp-action="EditUser"  asp-controller="Users" asp-route-userId="@item.Id">Edit</a>
+                                            }
                                         </div>
                                     </div>
                                 </div>

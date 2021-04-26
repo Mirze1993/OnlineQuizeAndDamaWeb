@@ -35,17 +35,26 @@
                 <div class="direct-chat-contacts">
                     <ul class="contacts-list">
                         <li>
+                            
                             @if (Model?.Count > 0)
                             {
+
                                 for (int i = 0; i < Model.Count; i++)
                                 {
-                                    <button onclick="showChat('@Model[i].SenderId', '@Model[i].SenderName')" class="btn btn-success" data-toggle="tooltip" data-widget="chat-pane-toggle">
-                                        <img class="contacts-list-img" src="~/dist/img/avatar5.png" />
-                                        <span class="contacts-list-name">
-                                            @Model[i].SenderName &nbsp; <span id="@Model[i].SenderName">@Model[i].NoReadCount</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <small class=" float-right">@Model[i].LastDate.ToString("yyyy/MM/dd HH:mm:ss")</small>
-                                        </span>
-                                    </button>
+                            <button onclick="showChat('@Model[i].SenderId', '@Model[i].SenderName','@Model[i].PictureSrc')" class="btn btn-success" data-toggle="tooltip" data-widget="chat-pane-toggle">
+                                @if (Model[i].PictureSrc != null)
+                                {
+                                    <img src="/img/profil/40x40/@Model[i].PictureSrc" alt="" class="contacts-list-img">
+                                }
+                                else
+                                {
+                                    <img class="contacts-list-img" src="~/dist/img/avatar5.png" />
+                                }
+                                <span class="contacts-list-name">
+                                    @Model[i].SenderName &nbsp; <span id="@Model[i].SenderName">@Model[i].NoReadCount</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <small class=" float-right">@Model[i].LastDate.ToString("yyyy/MM/dd HH:mm:ss")</small>
+                                </span>
+                            </button>
 
                                 }
                             }
@@ -88,7 +97,7 @@
     var name = "";
     var senderid = 0;
     var cueUserName = $("#UserName").val();
-    function showChat(senderId, senderName) {
+    function showChat(senderId, senderName,senderImg) {
         $("#ActiveChatName").val(senderName);
         $("#ActiveChatId").val(senderId);
         $("#chatHead").text(senderName);
@@ -115,12 +124,14 @@
                     chatbox.html("");
                     $(msgs).each(function (i, value) {
                         if (value.senderId == userid) {
-                            var rm = right(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:MM:ss"));
+                            var img = $.cookie('img');
+                            var rm = right(cueUserName, value.message, dateFormat(new Date(value.date), "mmm dd HH:MM:ss"),img);
                             chatbox.append(rm);
                         }
                         else {
-                            var rm = left(name, value.message, dateFormat(new Date(value.date), "mmm dd HH:MM:ss"));
-                            chatbox.append(rm);
+
+                            var rl = left(name, value.message, dateFormat(new Date(value.date), "mmm dd HH:MM:ss"), senderImg);
+                            chatbox.append(rl);
                         }
                     });
                     chatbox.animate({ scrollTop: chatbox.prop("scrollHeight") }, 1000);
