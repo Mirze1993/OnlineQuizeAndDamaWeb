@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,8 +48,24 @@ namespace DamaWeb
                 options.LogoutPath = "/Home/Login";                
             });
             services.AddSignalR();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            
+
+            services.AddLocalization(option => option.ResourcesPath = "Resources");
+
+            services.AddControllersWithViews().AddRazorRuntimeCompilation()
+                .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix
+             );
+
+            services.Configure<RequestLocalizationOptions>(config =>
+            {
+                var cultures = new List<CultureInfo> {
+                new CultureInfo("az"),
+                new CultureInfo("en")
+                };
+                config.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("az");
+                config.SupportedCultures = cultures;
+                config.SupportedUICultures = cultures;
+            });
+
             //services.AddHostedService<TimeHostedService>();
             services.AddHostedService<ConsumeScopedServiceHostedService>();
             //services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
@@ -69,6 +87,8 @@ namespace DamaWeb
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseRequestLocalization(app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseEndpoints(endpoints =>
             {
