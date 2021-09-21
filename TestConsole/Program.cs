@@ -2,7 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,8 +14,48 @@ namespace TestConsole
 {
     class Program
     {
+
+        public static string se(int a)
+        { 
+            switch (a)
+            {
+                case int b when b%1000==0: return "ci";
+                case int b when b%100==0: return "cü";
+                case int b when b%10==0 && new List<int> { 10, 30 }.Contains(b%100): return "cu";
+                case int b when b%10==0 && new List<int> { 20, 50,70,80 }.Contains(b%100): return "ci";
+                case int b when b%10==0 && new List<int> { 40, 60,70,90 }.Contains(b%100): return "cı";
+                case int b when new List<int> { 1,2,5,7,8 }.Contains(b%10):return "ci";
+                case int b when new List<int> { 3,4 }.Contains(b%10):return "cü";
+                case int b when b % 10 == 6: return "cü";
+                case int b when b % 10 == 9: return "cu";
+                default:
+                    break;
+            }
+            return "";
+        }
+
+
+        public class Payload
+        {
+            public string number { get; set; }
+            public string message { get; set; }
+        }
+
+    
         static void Main(string[] args)
         {
+            //Console.OutputEncoding = Encoding.UTF8;
+
+            //Console.WriteLine(se(45));
+            //Console.WriteLine(se(90));
+            //Console.WriteLine(se(99));
+            //Console.WriteLine(se(568));
+            //Console.WriteLine(se(600));
+            //Console.WriteLine(se(57));
+
+
+
+
             //SetTimer();
 
             //Console.WriteLine("\nPress the Enter key to exit the application...\n");
@@ -90,34 +134,34 @@ namespace TestConsole
 
             //StatusChecker.TestDinamic1 d1 = TestDinamic;
 
-            Stopwatch st = new Stopwatch();
-           
-            dynamic A = 3;
-            dynamic B = 4;
+            //Stopwatch st = new Stopwatch();
 
-            for (int i = 0; i < 100; i++)
-            {                
-                st.Start();
-                var t = new { A, B };
+            //dynamic A = 3;
+            //dynamic B = 4;
 
-                var r = JsonConvert.SerializeObject(t);
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    st.Start();
+            //    var t = new { A, B };
 
-                StatusChecker.TestDinamic1 d1 = JsonConvert.DeserializeObject<StatusChecker.TestDinamic1>(r);
-                Console.WriteLine(st.ElapsedMilliseconds);
+            //    var r = JsonConvert.SerializeObject(t);
 
-                st.Reset();
-            }
-           
-            
-           
+            //    StatusChecker.TestDinamic1 d1 = JsonConvert.DeserializeObject<StatusChecker.TestDinamic1>(r);
+            //    Console.WriteLine(st.ElapsedMilliseconds);
 
-            
+            //    st.Reset();
+            //}
 
-            Console.ReadLine();
+
+
+
+
+
+            //Console.ReadLine();
 
         }
 
-       
+
 
         static AutoResetEvent reset = new AutoResetEvent(false);
         static void BekleyenThred()

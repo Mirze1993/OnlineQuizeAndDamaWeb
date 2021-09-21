@@ -39,6 +39,21 @@ namespace DamaWeb.Repostory
             }
         }
 
+
+        public List<AppUser> GetUsersByClaimType(string claimTypen,string value)
+        {
+            using (var comannder = DBContext.CreateCommander())
+            {
+                return comannder.Reader<AppUser>(
+                    commandText: "GetUsersByClaimType"
+                    , commandType: System.Data.CommandType.StoredProcedure
+                    , parameters: new List<System.Data.Common.DbParameter> {
+                       comannder.SetParametr("ClaimTypen", claimTypen),
+                       comannder.SetParametr("Value", value)
+                    }).Item1;
+            }
+        }
+
         public bool UpdateOrCreateClaim(int userId,string type,string value)
         {
             using (var comannder = DBContext.CreateCommander())

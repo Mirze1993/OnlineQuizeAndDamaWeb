@@ -1,9 +1,10 @@
 ﻿using DamaWeb.Repostory;
-using DamaWeb.Tools;
 using MicroORM.Tools;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Model.Models;
 using Model.UIEntites;
@@ -126,6 +127,19 @@ namespace DamaWeb.Controllers
             var m = repository.GetNotifAndChatCount(userid);
             return new JsonResult(m);
         }
+        [HttpPost]
+        public IActionResult SetCulture(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+            return LocalRedirect(returnUrl);
+        }
 
+
+
+        
     }
 }
