@@ -20,7 +20,7 @@ namespace DamaWeb.Repostory
                         comannder.SetParametr("n",n),
                         comannder.SetParametr("ReciveId",id),
                         comannder.SetParametr("SenderId",otherId) }
-                    ).Item1;
+                    ).t;
         }
 
         public List<UIChatInfo> GetMesageGrup(int id)
@@ -31,7 +31,7 @@ namespace DamaWeb.Repostory
                     , commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                        comannder.SetParametr("Id",id) 
-                    }).Item1;
+                    }).t;
         }
 
         public List<Chat> GetLastIsNoReadMsg(int reciveId,int senderId )
@@ -43,7 +43,7 @@ namespace DamaWeb.Repostory
                     , parameters: new List<System.Data.Common.DbParameter> {
                         comannder.SetParametr("ReciveId",reciveId),
                         comannder.SetParametr("SenderId",senderId)
-                    }).Item1;
+                    }).t;
         }
     }
 }

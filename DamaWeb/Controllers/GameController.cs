@@ -30,20 +30,20 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public JsonResult StartGame(int id)
         {
-            var (pg,b) = repository.GetByColumNameFist("GameId", id);
-            if (!b) return new JsonResult("error") { StatusCode = (int)HttpStatusCode.InternalServerError };
-            return new JsonResult(pg);
+            var r = repository.GetByColumNameFist("GameId", id);
+            if (!r.Success) return new JsonResult("error") { StatusCode = (int)HttpStatusCode.InternalServerError };
+            return new JsonResult(r.t);
         }
 
         [HttpPost]
         public string PossiblePlace(int x, int y, int z, int gameId)
         {
-            var pg = repository.GetByColumNameFist("GameId", gameId).Item1;
+            var pg = repository.GetByColumNameFist("GameId", gameId);
             UICoordinate uICoordinate = new UICoordinate();
-            UIPlayGame uIPlaygame = new SrzJson().desrz(pg);
+            UIPlayGame uIPlaygame = new SrzJson().desrz(pg.t);
 
             //uIPlaygame.BlackCoordinate.any(c=>c.X==x&&c.Y==y&&c.Z==z)
-            if (pg.Gamer1 == pg.Queue&& uIPlaygame.WhiteCoordinate.Any(c => c.X == x && c.Y == y && c.Z == z))
+            if (pg.t.Gamer1 == pg.t.Queue&& uIPlaygame.WhiteCoordinate.Any(c => c.X == x && c.Y == y && c.Z == z))
             {
                 uICoordinate = new PossiblePlace(
                     uIPlaygame,
@@ -52,7 +52,7 @@ namespace DamaWeb.Controllers
                     Convert.ToByte(z)).
                     White();
             }
-            else if (pg.Gamer2 == pg.Queue&& uIPlaygame.BlackCoordinate.Any(c => c.X == x && c.Y == y && c.Z == z))
+            else if (pg.t.Gamer2 == pg.t.Queue&& uIPlaygame.BlackCoordinate.Any(c => c.X == x && c.Y == y && c.Z == z))
             {
                 uICoordinate = new PossiblePlace(
                     uIPlaygame,
@@ -67,8 +67,8 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public void Move(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
         {
-            var pg = repository.GetByColumNameFist("GameId", gameID).Item1;
-            var uiGame = new SrzJson().desrz(pg);
+            var pg = repository.GetByColumNameFist("GameId", gameID); ;
+            var uiGame = new SrzJson().desrz(pg.t);
             var moveItem = new MoveItem(
                 uiGame,
                 Convert.ToByte(oldX),
@@ -90,7 +90,7 @@ namespace DamaWeb.Controllers
                 uiGame.Queue = uiGame.Gamer1;
             }
             var mm=new SrzJson().srz(uiGame);
-            if (!new PlayGameRepository().Update(mm, pg.Id)) return ;
+            if (!new PlayGameRepository().Update(mm, pg.t.Id)) return ;
 
             hub.Clients.Group(gameID.ToString()).SendAsync("movedstone", JsonConvert.SerializeObject(mm));
 
@@ -101,8 +101,8 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public void DumMove(int gameID, int oldX, int oldY, int oldZ, int newX, int newY)
         {
-            var pg = repository.GetByColumNameFist("GameId", gameID).Item1;
-            var uiGame = new SrzJson().desrz(pg);
+            var pg = repository.GetByColumNameFist("GameId", gameID);
+            var uiGame = new SrzJson().desrz(pg.t);
             var moveItem = new MoveItem(
                 uiGame,
                 Convert.ToByte(oldX),
@@ -116,7 +116,7 @@ namespace DamaWeb.Controllers
             if (uiGame.Gamer1 == uiGame.Queue) uiGame = moveItem.DumWhite();
             else if (uiGame.Gamer2 == uiGame.Queue) uiGame = moveItem.DumBlack();
             var mm = new SrzJson().srz(uiGame);
-            if (!repository.Update(mm, pg.Id)) return;
+            if (!repository.Update(mm, pg.t.Id)) return;
 
             hub.Clients.Group(gameID.ToString()).SendAsync("movedstone", CkeckGame(mm));
             //return JsonConvert.SerializeObject(uiGame.Move);
@@ -130,7 +130,7 @@ namespace DamaWeb.Controllers
             if (!pg.BlackCoordinate.Contains("X") || !pg.WhiteCoordinate.Contains("X"))
             {
                 var gamesRepostory = new GamesRepository();
-                var g = gamesRepostory.GetByColumNameFist("Id", pg.GameId).Item1;
+                var g = gamesRepostory.GetByColumNameFist("Id", pg.GameId).t;
                 g.Status = GameStatus.Close;
                 if (!pg.WhiteCoordinate.Contains("X")) g.WinUser = g.AcceptUser;
                 if (!pg.BlackCoordinate.Contains("X")) g.WinUser = g.RequestUser;
@@ -144,7 +144,7 @@ namespace DamaWeb.Controllers
         public IActionResult Lose(int gameId)
         {
             var gamesRepostory = new GamesRepository();
-            var g = gamesRepostory.GetByColumNameFist("Id", gameId).Item1;
+            var g = gamesRepostory.GetByColumNameFist("Id", gameId).t;
             g.Status = GameStatus.Close;
             if(getId() != g.AcceptUser) g.WinUser = g.AcceptUser;
             else g.WinUser = g.RequestUser;

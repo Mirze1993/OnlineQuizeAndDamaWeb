@@ -16,9 +16,9 @@ namespace DamaWeb.Controllers
         [Authorize(Roles = "Admin, Teacher")]
         public IActionResult Add()
         {
-            var sc = new QuizeRepository().GetAll<Subject>("Id", "Name").Item1;
+            var sc = new QuizeRepository().GetAll<Subject>("Id", "Name"); ;
             var sl = new List<SelectListItem>();
-            if (sc != null) sc.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
+            if (sc != null) sc.t.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
             ViewBag.sl = sl;
             return View();
         }
@@ -43,11 +43,11 @@ namespace DamaWeb.Controllers
         public IActionResult Update(int id)
         {
             var rep = new QuizeRepository();
-            var sc = rep.GetAll<Subject>("Id", "Name").Item1;
+            var sc = rep.GetAll<Subject>("Id", "Name");
             var sl = new List<SelectListItem>();
-            if (sc != null) sc.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
+            if (sc != null) sc.t.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
             ViewBag.sl = sl;
-            var m = rep.GetByColumNameFist<Category>("Id", id).Item1;
+            var m = rep.GetByColumNameFist<Category>("Id", id);
             ViewBag.message = "Edit";
             return View("Add", m);
         }
@@ -69,10 +69,10 @@ namespace DamaWeb.Controllers
             if (category != null)
             {
                 category.UserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
-                var (id, b) = rep.Insert<Category>(category);
-                if (b && id > 0)
+                var r = rep.Insert<Category>(category);
+                if (r.Success && r.t > 0)
                 {
-                    category.Id = id;
+                    category.Id = r.t;
                     return View(category);
                 }
             }

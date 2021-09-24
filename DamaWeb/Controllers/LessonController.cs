@@ -36,14 +36,14 @@ namespace DamaWeb.Controllers
         public IActionResult StartQuize(int categoryId)
         {
             ViewBag.categoryId = categoryId;
-            return View(new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).Item1);
+            return View(new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).t);
         }
 
         public bool Result(ResultQuize result)
         {
             result.ResultDate = DateTime.Now;
             result.StudentId = getId();
-            return  new QuizeRepository().Insert<ResultQuize>(result).Item2;           
+            return  new QuizeRepository().Insert<ResultQuize>(result).Success;           
         }
     }
 }

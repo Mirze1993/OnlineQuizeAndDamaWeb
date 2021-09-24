@@ -25,8 +25,8 @@ namespace DamaWeb.Controllers
         public IActionResult All()
         {
             if (User.IsInRole("Admin"))
-                return View(new FollowRepository().GetAll<StudentGroup>().Item1);
-            return View(new FollowRepository().GetByColumName<StudentGroup>("CreaterId", getId()).Item1);
+                return View(new FollowRepository().GetAll<StudentGroup>().t);
+            return View(new FollowRepository().GetByColumName<StudentGroup>("CreaterId", getId()).t);
         }
         public IActionResult Add()
         {
@@ -39,7 +39,7 @@ namespace DamaWeb.Controllers
             if (model != null)
             {
                 model.CreaterId = getId();
-                var id = new FollowRepository().Insert<StudentGroup>(model).Item1;
+                var id = new FollowRepository().Insert<StudentGroup>(model).t;
                 if (id > 0)
                 {
                     model.Id = id;
@@ -53,7 +53,7 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public IActionResult Updatepage(int id)
         {
-            var model = new FollowRepository().GetByColumNameFist<StudentGroup>("Id", id).Item1;
+            var model = new FollowRepository().GetByColumNameFist<StudentGroup>("Id", id).t;
             ViewBag.message = "Edit";
             return View("Add", model);
         }
@@ -98,7 +98,7 @@ namespace DamaWeb.Controllers
         {
             
             var rep =new FollowRepository();
-            var allCategory = rep.GetByColumName<Category>("UserId",teacherId,"Id","Name").Item1;
+            var allCategory = rep.GetByColumName<Category>("UserId",teacherId,"Id","Name").t;
             List<SelectListItem> selectLists = new List<SelectListItem>();
             if (allCategory != null)
                 selectLists= allCategory.Select(x => new SelectListItem() { Value = x.Id.ToString(), Text = x.Name }).ToList();

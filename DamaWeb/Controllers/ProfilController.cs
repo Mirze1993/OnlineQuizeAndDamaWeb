@@ -35,8 +35,8 @@ namespace DamaWeb.Controllers
         {
             if (id == 0) id = getId();
             var rep = new UserRepository();
-            var user = rep.GetByColumNameFist("Id",id ).Item1;
-            var claims = rep.GetByColumName<UserClaims>("UserId",id).Item1;
+            var user = rep.GetByColumNameFist("Id",id ).t;
+            var claims = rep.GetByColumName<UserClaims>("UserId",id).t;
             UIProfil profil = new UIProfil();
 
             profil.Id = user.Id;

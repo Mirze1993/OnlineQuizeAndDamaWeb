@@ -13,17 +13,17 @@ namespace DamaWeb.Repostory
     {
         public (bool, AppUser) ValidateUserCredentials(string username, string password)
         {
-            var (u, b) = GetByColumNameFist("UserName", username);
+            var r = GetByColumNameFist("UserName", username);
 
-            if (!b || u == default(AppUser)) return (false, default(AppUser));
-            b = new HashCreate().VerfiyPassword(password, u.Password);
-            return (b, b ? u : null);
+            if (!r.Success || r.t == default(AppUser)) return (false, default(AppUser));
+            var b = new HashCreate().VerfiyPassword(password, r.t.Password);
+            return (b, b ? r.t : null);
         }
 
         public List<AppUser> getRandomUsers()
         {
             using (var comannder = DBContext.CreateCommander())
-                return comannder.Reader<AppUser>("GetRandomUsers", commandType: System.Data.CommandType.StoredProcedure).Item1;
+                return comannder.Reader<AppUser>("GetRandomUsers", commandType: System.Data.CommandType.StoredProcedure).t;
         }
 
         public UINotifAndChatCount GetNotifAndChatCount(int id)
@@ -35,7 +35,7 @@ namespace DamaWeb.Repostory
                     , commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                        comannder.SetParametr("id", id)
-                    }).Item1;
+                    }).t;
             }
         }
 

@@ -26,7 +26,7 @@ namespace DamaWeb.Controllers
         public IActionResult AllByCategory(int categoryId)
         {
             ViewBag.categoryId = categoryId;
-            return View("AllByCategory", new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).Item1);
+            return View("AllByCategory", new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).t);
         }
 
         [Authorize(Roles = "Admin, Teacher")]
@@ -41,7 +41,7 @@ namespace DamaWeb.Controllers
         public IActionResult View(int id)
         {
             ViewBag.edit = "View";
-            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).Item1);
+            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).t);
         }
 
 
@@ -50,7 +50,7 @@ namespace DamaWeb.Controllers
         public IActionResult GoUpdate(int id)
         {
             ViewBag.edit = "Update";
-            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).Item1);
+            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).t);
         }
 
         [Authorize(Roles = "Admin, Teacher")]
@@ -302,11 +302,11 @@ namespace DamaWeb.Controllers
             model.DImgSrc = DImgName;
             model.EImgSrc = EImgName;
 
-            var (id, b) = new QuizeRepository().Insert(model);
+            var r = new QuizeRepository().Insert(model);
 
-            if (b && id > 0)
+            if (r.Success && r.t > 0)
             {
-                model.Id = id;
+                model.Id = r.t;
                 return View(model);
             }
 
@@ -317,7 +317,7 @@ namespace DamaWeb.Controllers
         public IActionResult Delete(int id, int categoryId)
         {
             var rep = new QuizeRepository();
-            var q = rep.GetByColumNameFist("Id", id, "VideoSrc", "PictureSrc").Item1;
+            var q = rep.GetByColumNameFist("Id", id, "VideoSrc", "PictureSrc").t;
 
             if (q.QuestionImgSrc != null)
             {

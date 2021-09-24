@@ -50,11 +50,11 @@ namespace DamaWeb.Repostory
 
             using (CommanderBase commander = DBContext.CreateCommander())
             {
-                 var (g,b)=commander.Reader<UIGames>("GetUserGames", commandType: System.Data.CommandType.StoredProcedure,
+                 var r=commander.Reader<UIGames>("GetUserGames", commandType: System.Data.CommandType.StoredProcedure,
                     parameters: new List<System.Data.Common.DbParameter> {
                         commander.SetParametr("Id",id)}
                     );
-                return g;
+                return r.t;
             }
         }
 

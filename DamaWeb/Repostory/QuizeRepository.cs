@@ -20,7 +20,7 @@ namespace DamaWeb.Repostory
                     commandType:System.Data.CommandType.StoredProcedure
                     , parameters:new List<System.Data.Common.DbParameter> { 
                     comander.SetParametr("userId",id)
-                    }).Item1;
+                    }).t;
             }
         }
 
@@ -32,7 +32,7 @@ namespace DamaWeb.Repostory
                     commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                     comander.SetParametr("subjectId",subjectid)
-                    }).Item1;
+                    }).t;
             }
         }
 
@@ -44,7 +44,7 @@ namespace DamaWeb.Repostory
                     commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                     comander.SetParametr("studentId",studentId)
-                    }).Item1;
+                    }).t;
             }
         }
 
@@ -57,7 +57,7 @@ namespace DamaWeb.Repostory
                     commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                     comander.SetParametr("groupeId",groupeId)
-                    }).Item1;
+                    }).t;
             }
         }
 
@@ -70,7 +70,7 @@ namespace DamaWeb.Repostory
                     , parameters: new List<System.Data.Common.DbParameter> {
                     comander.SetParametr("studentId",studentId),
                     comander.SetParametr("teacherId",teacherId),
-                    }).Item1;
+                    }).t;
             }
         }
 

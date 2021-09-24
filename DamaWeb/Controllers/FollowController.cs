@@ -16,7 +16,7 @@ namespace DamaWeb.Controllers
     {
         public IActionResult SelectGroupe()
         {
-            var l = new QuizeRepository().GetAll<Subject>("Id", "Name").Item1;
+            var l = new QuizeRepository().GetAll<Subject>("Id", "Name").t;
             var sl = new List<SelectListItem>();
             if (l != null)
                 l.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
@@ -34,7 +34,7 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public JsonResult GetCategores(int teacherID)
         {
-            var l = new QuizeRepository().GetByColumName<Category>("UserId", teacherID,"Name","Description").Item1;
+            var l = new QuizeRepository().GetByColumName<Category>("UserId", teacherID,"Name","Description").t;
             if (l?.Count > 0)
                 return new JsonResult(l);
             return new JsonResult("error") { StatusCode = (int)HttpStatusCode.BadRequest };
@@ -42,7 +42,7 @@ namespace DamaWeb.Controllers
         [HttpPost]
         public IActionResult FollowTeacher(int teacherId)
         {
-            var teacher = new QuizeRepository().GetByColumNameFist<AppUser>("Id", teacherId, "Name","Id","Phone","Email","ProfilPicture").Item1;
+            var teacher = new QuizeRepository().GetByColumNameFist<AppUser>("Id", teacherId, "Name","Id","Phone","Email","ProfilPicture").t;
             return PartialView("FollowTeacher",teacher);
         }
 

@@ -31,21 +31,21 @@ namespace DamaWeb.Controllers
 
         public IActionResult RequestGame(int id)
         {
-            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id", "ProfilPicture").Item1;
+            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id", "ProfilPicture").t;
             return PartialView("RequestGame", u);
         }
 
         [HttpPost]
         public IActionResult Search(string name)
         {
-            var u = repository.GetWithCondition($"Name Like '%" + name + "%'", "Name", "Email", "Id", "ProfilPicture").Item1;
+            var u = repository.GetWithCondition($"Name Like '%" + name + "%'", "Name", "Email", "Id", "ProfilPicture").t;
             return View("UsersIndex", u);
         }
         [Authorize(Roles = "Admin")]
         public IActionResult EditUser(int userId)
         {
-            var claims = repository.GetByColumName<UserClaims>("UserId", userId).Item1;
-            var u = repository.GetByColumNameFist("Id", userId).Item1;
+            var claims = repository.GetByColumName<UserClaims>("UserId", userId).t;
+            var u = repository.GetByColumNameFist("Id", userId).t;
             var model = new UIUserClaims { Claims = claims, User = u };
             return View(model);
         }
