@@ -23,14 +23,16 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult AllByCategory(int categoryId)
         {
             ViewBag.categoryId = categoryId;
-            return View("AllByCategory", new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).t);
+            return View("AllByCategory", new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).Value);
         }
 
         [Authorize(Roles = "Admin, Teacher")]
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GoAdd(int categoryId)
         {
             return View("Add",new Quize { CategoryId = categoryId });
@@ -38,23 +40,26 @@ namespace DamaWeb.Controllers
 
         [Authorize(Roles = "Admin, Teacher")]
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult View(int id)
         {
             ViewBag.edit = "View";
-            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).t);
+            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).Value);
         }
 
 
         [Authorize(Roles = "Admin, Teacher")]
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GoUpdate(int id)
         {
             ViewBag.edit = "Update";
-            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).t);
+            return View("Add", new QuizeRepository().GetByColumNameFist("Id", id).Value);
         }
 
         [Authorize(Roles = "Admin, Teacher")]
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
         [RequestSizeLimit(209715200)]
         public async Task<IActionResult> Update(Quize model, IFormFile Img, IFormFile Video,
@@ -187,6 +192,7 @@ namespace DamaWeb.Controllers
 
         [Authorize(Roles = "Admin, Teacher")]
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
         [RequestSizeLimit(209715200)]
         public async Task<IActionResult> Add(Quize model, IFormFile Img, IFormFile Video,
@@ -304,9 +310,9 @@ namespace DamaWeb.Controllers
 
             var r = new QuizeRepository().Insert(model);
 
-            if (r.Success && r.t > 0)
+            if (r.Success && r.Value > 0)
             {
-                model.Id = r.t;
+                model.Id = r.Value;
                 return View(model);
             }
 
@@ -317,7 +323,7 @@ namespace DamaWeb.Controllers
         public IActionResult Delete(int id, int categoryId)
         {
             var rep = new QuizeRepository();
-            var q = rep.GetByColumNameFist("Id", id, "VideoSrc", "PictureSrc").t;
+            var q = rep.GetByColumNameFist("Id", id, "VideoSrc", "PictureSrc").Value;
 
             if (q.QuestionImgSrc != null)
             {

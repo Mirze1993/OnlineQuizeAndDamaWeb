@@ -25,8 +25,8 @@ namespace DamaWeb.Controllers
         public IActionResult All()
         {
             if (User.IsInRole("Admin"))
-                return View(new FollowRepository().GetAll<StudentGroup>().t);
-            return View(new FollowRepository().GetByColumName<StudentGroup>("CreaterId", getId()).t);
+                return View(new FollowRepository().GetAll<StudentGroup>().Value);
+            return View(new FollowRepository().GetByColumName<StudentGroup>("CreaterId", getId()).Value);
         }
         public IActionResult Add()
         {
@@ -34,12 +34,13 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Add(StudentGroup model)
         {
             if (model != null)
             {
                 model.CreaterId = getId();
-                var id = new FollowRepository().Insert<StudentGroup>(model).t;
+                var id = new FollowRepository().Insert<StudentGroup>(model).Value;
                 if (id > 0)
                 {
                     model.Id = id;
@@ -51,13 +52,15 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Updatepage(int id)
         {
-            var model = new FollowRepository().GetByColumNameFist<StudentGroup>("Id", id).t;
+            var model = new FollowRepository().GetByColumNameFist<StudentGroup>("Id", id).Value;
             ViewBag.message = "Edit";
             return View("Add", model);
         }
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Update(StudentGroup model)
         {
             if (model != null)
@@ -68,6 +71,7 @@ namespace DamaWeb.Controllers
 
         // GetStudentsByTecherId
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult AddStudent(int groupId, string groupName,int teacherId)
         {
             ViewBag.groupId = groupId;
@@ -94,11 +98,12 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult AddCategory(int groupId, string groupName, int teacherId)
         {
             
             var rep =new FollowRepository();
-            var allCategory = rep.GetByColumName<Category>("UserId",teacherId,"Id","Name").t;
+            var allCategory = rep.GetByColumName<Category>("UserId",teacherId,"Id","Name").Value;
             List<SelectListItem> selectLists = new List<SelectListItem>();
             if (allCategory != null)
                 selectLists= allCategory.Select(x => new SelectListItem() { Value = x.Id.ToString(), Text = x.Name }).ToList();
@@ -115,6 +120,7 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult UpdateCategoryGroup(UICategoryGroup model,List<int> oldCategories)
         {
             if (model != null&&model?.GroupId!=null)

@@ -26,6 +26,7 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetCategoryInGroup(int groupId)
         {
             var model = new QuizeRepository().SelectCategoryInGroup(groupId);
@@ -33,10 +34,11 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult StartQuize(int categoryId)
         {
             ViewBag.categoryId = categoryId;
-            return View(new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).t);
+            return View(new QuizeRepository().GetByColumName<Quize>("CategoryId", categoryId).Value);
         }
 
         public bool Result(ResultQuize result)

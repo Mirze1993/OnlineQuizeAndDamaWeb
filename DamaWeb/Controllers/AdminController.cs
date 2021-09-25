@@ -1,38 +1,26 @@
 ﻿using DamaWeb.Repostory;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Model.Models;
 using Model.UIEntites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DamaWeb.Controllers
 {
-    [Authorize]
-    public class UsersController : Controller
+    public class AdminController : Controller
     {
         private readonly UserRepository repository;
-
-
-        public UsersController()
+        public AdminController()
         {
             repository = new UserRepository();
         }
-
         public IActionResult UsersIndex()
         {
             var users = repository.getRandomUsers();
             return View(users);
-        }
-
-        public IActionResult RequestGame(int id)
-        {
-            var u = repository.GetByColumNameFist("Id", id, "Name", "Email", "Id", "ProfilPicture").Value;
-            return PartialView("RequestGame", u);
         }
 
         [HttpPost]
@@ -42,7 +30,9 @@ namespace DamaWeb.Controllers
             var u = repository.GetWithCondition($"Name Like '%" + name + "%'", "Name", "Email", "Id", "ProfilPicture").Value;
             return View("UsersIndex", u);
         }
-        
+
+
+        [Authorize(Roles = "Admin")]
         public IActionResult EditUser(int userId)
         {
             var claims = repository.GetByColumName<UserClaims>("AppUserId", userId).Value;
@@ -52,10 +42,10 @@ namespace DamaWeb.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteClaim(int id,int userId)
+        public IActionResult DeleteClaim(int id, int userId)
         {
             repository.Delet<UserClaims>(id);
-            return RedirectToAction("EditUser",new { userId = userId });
+            return RedirectToAction("EditUser", new { userId = userId });
         }
 
         [Authorize(Roles = "Admin")]
@@ -64,7 +54,7 @@ namespace DamaWeb.Controllers
         public IActionResult AddClaim(UserClaims claims)
         {
             repository.Insert<UserClaims>(claims);
-            return RedirectToAction("EditUser",new { userId=claims.AppUserId});
+            return RedirectToAction("EditUser", new { userId = claims.AppUserId });
         }
     }
 }

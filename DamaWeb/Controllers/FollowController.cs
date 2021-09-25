@@ -16,7 +16,7 @@ namespace DamaWeb.Controllers
     {
         public IActionResult SelectGroupe()
         {
-            var l = new QuizeRepository().GetAll<Subject>("Id", "Name").t;
+            var l = new QuizeRepository().GetAll<Subject>("Id", "Name").Value;
             var sl = new List<SelectListItem>();
             if (l != null)
                 l.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
@@ -24,6 +24,7 @@ namespace DamaWeb.Controllers
             return View();
         }
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public JsonResult SelectTeacher(int subjectId)
         {
             var l = new QuizeRepository().GetQuizeWriterUsers(subjectId);
@@ -32,21 +33,24 @@ namespace DamaWeb.Controllers
             return new JsonResult("error") {StatusCode=(int)HttpStatusCode.BadRequest };
         }
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public JsonResult GetCategores(int teacherID)
         {
-            var l = new QuizeRepository().GetByColumName<Category>("UserId", teacherID,"Name","Description").t;
+            var l = new QuizeRepository().GetByColumName<Category>("UserId", teacherID,"Name","Description").Value;
             if (l?.Count > 0)
                 return new JsonResult(l);
             return new JsonResult("error") { StatusCode = (int)HttpStatusCode.BadRequest };
         }
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult FollowTeacher(int teacherId)
         {
-            var teacher = new QuizeRepository().GetByColumNameFist<AppUser>("Id", teacherId, "Name","Id","Phone","Email","ProfilPicture").t;
+            var teacher = new QuizeRepository().GetByColumNameFist<AppUser>("Id", teacherId, "Name","Id","Phone","Email","ProfilPicture").Value;
             return PartialView("FollowTeacher",teacher);
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public int FollowRequest(int teacherId,int subjectId)
         {
             var rep = new FollowRepository();

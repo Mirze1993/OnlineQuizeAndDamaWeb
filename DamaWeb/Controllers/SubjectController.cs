@@ -20,13 +20,13 @@ namespace DamaWeb.Controllers
 
         public IActionResult All()
         {
-            return View(new QuizeRepository().GetAll<Subject>().t);
+            return View(new QuizeRepository().GetAll<Subject>().Value);
         }
 
         public IActionResult Update(int id)
         {
             var rep = new QuizeRepository();
-            var m=rep.GetByColumNameFist<Subject>("Id", id).t;
+            var m=rep.GetByColumNameFist<Subject>("Id", id).Value;
             ViewBag.message = "Edit";
             return View("Add",m);
         }
@@ -40,15 +40,16 @@ namespace DamaWeb.Controllers
 
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Add(Subject subject)
         {
             var rep = new QuizeRepository();
             if (subject != null)
             {
                 var r = rep.Insert<Subject>(subject);
-                if (r.Success && r.t > 0)
+                if (r.Success && r.Value > 0)
                 {
-                    subject.Id = r.t;
+                    subject.Id = r.Value;
                     return View(subject);
                 }
             }
@@ -56,6 +57,7 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Update(Subject subject)
         {
             var rep = new QuizeRepository();

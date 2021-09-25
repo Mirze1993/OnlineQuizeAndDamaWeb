@@ -54,7 +54,7 @@ namespace DamaWeb.Repostory
                     parameters: new List<System.Data.Common.DbParameter> {
                         commander.SetParametr("Id",id)}
                     );
-                return r.t;
+                return r.Value;
             }
         }
 

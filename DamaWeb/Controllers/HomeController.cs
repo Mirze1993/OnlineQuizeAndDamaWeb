@@ -49,7 +49,7 @@ namespace DamaWeb.Controllers
             {
                 var result = repository.GetByColumNameFist("UserName", model.UserName);
 
-                if (!result.Success || result.t != default(AppUser))
+                if (!result.Success || result.Value != default(AppUser))
                 {
                     ModelState.AddModelError("", $"{model.UserName} is alreay  use");
                     return View();
@@ -88,8 +88,8 @@ namespace DamaWeb.Controllers
                     };
 
                     var r = repository.GetWithCondition<UserClaims>($"AppUserId={u.Id} and Type ='Role'");
-                    if (r.Success) if (r.t != null)
-                            r.t.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.Value)));
+                    if (r.Success) if (r.Value != null)
+                            r.Value.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.Value)));
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

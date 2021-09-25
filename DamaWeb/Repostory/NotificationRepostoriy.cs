@@ -16,7 +16,7 @@ namespace DamaWeb.Repostory
                     commandText:"GetLastN"
                     ,commandType: System.Data.CommandType.StoredProcedure
                     ,parameters: new List<System.Data.Common.DbParameter> {
-                        comannder.SetParametr("n",n),comannder.SetParametr("id",id)}).t;
+                        comannder.SetParametr("n",n),comannder.SetParametr("id",id)}).Value;
         }
     }
 }

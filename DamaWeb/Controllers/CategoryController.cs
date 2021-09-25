@@ -18,7 +18,7 @@ namespace DamaWeb.Controllers
         {
             var sc = new QuizeRepository().GetAll<Subject>("Id", "Name"); ;
             var sl = new List<SelectListItem>();
-            if (sc != null) sc.t.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
+            if (sc != null) sc.Value.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
             ViewBag.sl = sl;
             return View();
         }
@@ -45,7 +45,7 @@ namespace DamaWeb.Controllers
             var rep = new QuizeRepository();
             var sc = rep.GetAll<Subject>("Id", "Name");
             var sl = new List<SelectListItem>();
-            if (sc != null) sc.t.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
+            if (sc != null) sc.Value.ForEach(mm => sl.Add(new SelectListItem { Value = mm.Id.ToString(), Text = mm.Name }));
             ViewBag.sl = sl;
             var m = rep.GetByColumNameFist<Category>("Id", id);
             ViewBag.message = "Edit";
@@ -63,6 +63,7 @@ namespace DamaWeb.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Teacher")]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Add(Category category)
         {
             var rep = new QuizeRepository();
@@ -70,9 +71,9 @@ namespace DamaWeb.Controllers
             {
                 category.UserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
                 var r = rep.Insert<Category>(category);
-                if (r.Success && r.t > 0)
+                if (r.Success && r.Value > 0)
                 {
-                    category.Id = r.t;
+                    category.Id = r.Value;
                     return View(category);
                 }
             }
@@ -81,6 +82,7 @@ namespace DamaWeb.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Teacher")]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Update(Category category)
         {
             var rep = new QuizeRepository();

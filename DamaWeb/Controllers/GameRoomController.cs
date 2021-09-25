@@ -52,7 +52,7 @@ namespace DamaWeb.Controllers
             var b = repository.AcceptGame(id) > 0;
             if (b)
             {
-                var requserId = repository.GetByColumNameFist("Id", id).t.RequestUser;
+                var requserId = repository.GetByColumNameFist("Id", id).Value.RequestUser;
                 var message = "Qebul olunmus oyun isteyi";
                 repository.Insert<Model.Models.Notification>(new Model.Models.Notification { UserId = requserId, Message = message, Type = Model.Models.NotificationType.GameAccept });
                 hub.Clients.User(requserId.ToString()).SendAsync("notifications");
@@ -64,7 +64,7 @@ namespace DamaWeb.Controllers
         public bool RejectRequest(int id)
         {
             var repository = new Repostory.GamesRepository();
-            var requserId = repository.GetByColumNameFist("Id", id).t.RequestUser;
+            var requserId = repository.GetByColumNameFist("Id", id).Value.RequestUser;
             var b = new Repostory.GamesRepository().Delet(id);
             if (b)
             {                

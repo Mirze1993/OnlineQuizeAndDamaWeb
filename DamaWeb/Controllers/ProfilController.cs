@@ -35,8 +35,8 @@ namespace DamaWeb.Controllers
         {
             if (id == 0) id = getId();
             var rep = new UserRepository();
-            var user = rep.GetByColumNameFist("Id",id ).t;
-            var claims = rep.GetByColumName<UserClaims>("UserId",id).t;
+            var user = rep.GetByColumNameFist("Id",id ).Value;
+            var claims = rep.GetByColumName<UserClaims>("AppUserId",id).Value;
             UIProfil profil = new UIProfil();
 
             profil.Id = user.Id;
@@ -74,6 +74,7 @@ namespace DamaWeb.Controllers
 
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult EditClaims(UIProfil model)
         {
             var rep=new UserRepository();
@@ -87,6 +88,7 @@ namespace DamaWeb.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public bool ImageUpload(string oldPic, IFormFile file)
         {
             string pictureName = oldPic;

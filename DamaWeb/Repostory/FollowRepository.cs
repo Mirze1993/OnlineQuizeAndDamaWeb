@@ -37,7 +37,7 @@ namespace DamaWeb.Repostory
                      commander.SetParametr("TecherId",teacherId),                    
                 };
                 return commander.Reader<UIStudentTeacher>("GetStudentsByTecherId", commandType: System.Data.CommandType.StoredProcedure,
-                    parameters: sqlparams).t;
+                    parameters: sqlparams).Value;
             }
         }
 
@@ -50,7 +50,7 @@ namespace DamaWeb.Repostory
                 };
                 return commander.Reader<UIStudentTeacher>("WaitApproveFollow", 
                     commandType: System.Data.CommandType.StoredProcedure,
-                    parameters: sqlparams).t;
+                    parameters: sqlparams).Value;
             }
         }
 
@@ -63,7 +63,7 @@ namespace DamaWeb.Repostory
                      commander.SetParametr("StudentId",studentId),
                 };
                 return commander.ReaderFist<StudentTeacher>("GetStudentTeacher", commandType: System.Data.CommandType.StoredProcedure,
-                    parameters: sqlparams).t;
+                    parameters: sqlparams).Value;
             }
         }
 
@@ -76,7 +76,7 @@ namespace DamaWeb.Repostory
                      commander.SetParametr("groupId",groupId),
                 };
                 return commander.Reader<UICategoryINGroupe>("SelectTecherGroupeCategory", commandType: System.Data.CommandType.StoredProcedure,
-                    parameters: sqlparams).t;
+                    parameters: sqlparams).Value;
             }
         }
 

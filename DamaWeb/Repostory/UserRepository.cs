@@ -15,15 +15,15 @@ namespace DamaWeb.Repostory
         {
             var r = GetByColumNameFist("UserName", username);
 
-            if (!r.Success || r.t == default(AppUser)) return (false, default(AppUser));
-            var b = new HashCreate().VerfiyPassword(password, r.t.Password);
-            return (b, b ? r.t : null);
+            if (!r.Success || r.Value == default(AppUser)) return (false, default(AppUser));
+            var b = new HashCreate().VerfiyPassword(password, r.Value.Password);
+            return (b, b ? r.Value : null);
         }
 
         public List<AppUser> getRandomUsers()
         {
             using (var comannder = DBContext.CreateCommander())
-                return comannder.Reader<AppUser>("GetRandomUsers", commandType: System.Data.CommandType.StoredProcedure).t;
+                return comannder.Reader<AppUser>("GetRandomUsers", commandType: System.Data.CommandType.StoredProcedure).Value;
         }
 
         public UINotifAndChatCount GetNotifAndChatCount(int id)
@@ -35,7 +35,7 @@ namespace DamaWeb.Repostory
                     , commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
                        comannder.SetParametr("id", id)
-                    }).t;
+                    }).Value;
             }
         }
 
@@ -47,7 +47,7 @@ namespace DamaWeb.Repostory
                     commandText: "UpdateOrCreateClaim"
                     , commandType: System.Data.CommandType.StoredProcedure
                     , parameters: new List<System.Data.Common.DbParameter> {
-                       comannder.SetParametr("UserId", userId),
+                       comannder.SetParametr("AppUserId", userId),
                        comannder.SetParametr("Type", type),
                        comannder.SetParametr("Value", value)
                     });
